@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SharedObjects
+﻿namespace SharedObjects
 {
     public class WatchItem
     {
