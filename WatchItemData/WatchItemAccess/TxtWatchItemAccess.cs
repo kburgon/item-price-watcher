@@ -16,7 +16,7 @@ namespace WatchItemData.WatchItemAccess
             fullFilePath = path;
         }
 
-        public List<WatchItem> GetActiveWatchItems()
+        public List<WatchItem> GetWatchItems()
         {
             throw new NotImplementedException();
         }

@@ -4,7 +4,7 @@ namespace WatchItemData.WatchItemAccess
 {
     public class SqlWatchItemAccess : IWatchItemAccess
     {
-        public List<WatchItem> GetActiveWatchItems()
+        public List<WatchItem> GetWatchItems()
         {
             return new List<WatchItem>();
         }

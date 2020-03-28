@@ -5,6 +5,6 @@ namespace WatchItemData.WatchItemAccess
 {
     public interface IWatchItemAccess
     {
-        List<WatchItem> GetActiveWatchItems();
+        List<WatchItem> GetWatchItems();
     }
 }
