@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using SharedObjects;
 
-namespace WatchItemStore
+namespace WatchItemData
 {
-    class SqlWorkItemRetriever : IItemRetriever
+    public class SqlWorkItemAccess : IWorkItemAccess
     {
         public List<WatchItem> GetActiveWatchItems()
         {
