@@ -1,4 +1,4 @@
-﻿namespace SharedObjects
+﻿namespace WatchItemData
 {
     public class WatchItem
     {

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using SharedObjects;
 
-namespace WatchItemData
+namespace WatchItemData.WatchItemAccess
 {
-    public interface IWorkItemAccess
+    public interface IWatchItemAccess
     {
         List<WatchItem> GetActiveWatchItems();
     }
