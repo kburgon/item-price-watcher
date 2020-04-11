@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ItemPriceWatcher\ItemPriceWatcher.csproj" />
+    <ProjectReference Include="..\WatchItemData\WatchItemData.csproj" />
   </ItemGroup>
 
 </Project>
