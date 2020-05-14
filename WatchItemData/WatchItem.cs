@@ -2,9 +2,9 @@
 {
     public class WatchItem
     {
-        public int WatchItemID { get; set; }
-        public string WatchItemName { get; set; }
-        public string Url { get; set; }
-        public string ItemPath { get; set; }
+        public virtual int WatchItemID { get; set; }
+        public virtual string WatchItemName { get; set; }
+        public virtual string Url { get; set; }
+        public virtual string ItemPath { get; set; }
     }
 }

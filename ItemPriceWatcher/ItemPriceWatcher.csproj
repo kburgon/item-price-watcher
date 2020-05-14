@@ -5,6 +5,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="NHibernate" Version="5.2.7" />
     <PackageReference Include="Selenium.webDriver" Version="3.141.0" />
     <PackageReference Include="Selenium.WebDriver.GeckoDriver" Version="0.26.0.1" />
   </ItemGroup>
