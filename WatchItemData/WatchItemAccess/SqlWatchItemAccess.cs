@@ -1,12 +1,18 @@
 using System.Collections.Generic;
+using System.Linq;
+using WatchItemData.WatchItemAccess.ORM.Sessions;
 
 namespace WatchItemData.WatchItemAccess
 {
     public class SqlWatchItemAccess : IWatchItemAccess
     {
-        public List<WatchItem> GetWatchItems()
+        private readonly IMapperSession<WatchItem> session;
+
+        public SqlWatchItemAccess(IMapperSession<WatchItem> session)
         {
-            return new List<WatchItem>();
+            this.session = session;
         }
+
+        public List<WatchItem> GetWatchItems() => session.Objects.ToList();
     }
 }

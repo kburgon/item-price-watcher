@@ -1,4 +1,3 @@
-using System;
 using Microsoft.Extensions.DependencyInjection;
 using NHibernate.Cfg;
 using NHibernate.Cfg.MappingSchema;
@@ -19,7 +18,7 @@ namespace WatchItemData.WatchItemAccess.ORM.Extensions
             var configuration = new Configuration();
             configuration.DataBaseIntegration(c => 
             {
-                c.Dialect<MySQL57Dialect>();
+                c.Dialect<GenericDialect>();
                 c.ConnectionString = connectionString;
                 c.KeywordsAutoImport = Hbm2DDLKeyWords.AutoQuote;
                 c.SchemaAction = SchemaAutoAction.Validate;

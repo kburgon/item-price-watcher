@@ -10,7 +10,7 @@ namespace ItemPriceWatcher
         {
             if (args.Length > 1 && args[1] == "--txtsource")
             {
-                itemGet = new SqlWatchItemAccess();
+                // itemGet = new SqlWatchItemAccess();
             }
         }
     }
