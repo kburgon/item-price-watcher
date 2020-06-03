@@ -18,7 +18,7 @@ namespace WatchItemData.WatchItemAccess.ORM.Extensions
             var configuration = new Configuration();
             configuration.DataBaseIntegration(c => 
             {
-                c.Dialect<GenericDialect>();
+                c.Dialect<MySQL5Dialect>();
                 c.ConnectionString = connectionString;
                 c.KeywordsAutoImport = Hbm2DDLKeyWords.AutoQuote;
                 c.SchemaAction = SchemaAutoAction.Validate;
@@ -27,7 +27,7 @@ namespace WatchItemData.WatchItemAccess.ORM.Extensions
             });
 
             configuration.AddMapping(domainMapping);
-
+            
             var sessionFactory = configuration.BuildSessionFactory();
 
             services.AddSingleton(sessionFactory);
