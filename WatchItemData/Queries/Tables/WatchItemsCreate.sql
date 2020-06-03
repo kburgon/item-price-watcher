@@ -1,3 +1,5 @@
+USE ItemPriceWatcher;
+
 CREATE TABLE WatchItems (
     id INT AUTO_INCREMENT PRIMARY KEY,
     itemName VARCHAR(30) NOT NULL,
