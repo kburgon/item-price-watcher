@@ -5,7 +5,7 @@ using NHibernate.Dialect;
 using NHibernate.Mapping.ByCode;
 using WatchItemData.WatchItemAccess.ORM.Sessions;
 
-namespace WatchItemData.WatchItemAccess.ORM.Extensions
+namespace WatchItemData.WatchItemAccess.ORM
 {
     public static class NHibernateExtensions
     {

@@ -5,7 +5,7 @@ using WatchItemData.WatchItemAccess;
 using ItemPriceWatcher.Test.Mocks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using WatchItemData.WatchItemAccess.ORM.Extensions;
+using WatchItemData.WatchItemAccess.ORM;
 using WatchItemData.WatchItemAccess.ORM.Sessions;
 using System.Threading.Tasks;
 
