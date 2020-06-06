@@ -21,7 +21,7 @@ namespace WatchItemData.WatchItemAccess.ORM.Extensions
                 c.Dialect<MySQL5Dialect>();
                 c.ConnectionString = connectionString;
                 c.KeywordsAutoImport = Hbm2DDLKeyWords.AutoQuote;
-                c.SchemaAction = SchemaAutoAction.Validate;
+                c.SchemaAction = SchemaAutoAction.Update;
                 c.LogFormattedSql = true;
                 c.LogSqlInConsole = true;
             });

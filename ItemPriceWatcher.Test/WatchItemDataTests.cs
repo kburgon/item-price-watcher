@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using WatchItemData.WatchItemAccess.ORM.Extensions;
 using WatchItemData.WatchItemAccess.ORM.Sessions;
+using System.Threading.Tasks;
 
 namespace ItemPriceWatcher.Test
 {
@@ -14,10 +15,11 @@ namespace ItemPriceWatcher.Test
     public class WatchItemDataTests
     {
         private const string CONN_STRING = @"Server=127.0.0.1; Database=ItemPriceWatcher; Port=3308; Uid=kevin; Pwd=co1ch2ito3";
+        private static IServiceScope serviceScope;
         private static IMapperSession<WatchItem> session;
 
-        [AssemblyInitialize]
-        public static void InitializeAssembly(TestContext context)
+        [ClassInitialize]
+        public static void InitializeClass(TestContext context)
         {
             var host = Host.CreateDefaultBuilder()
                             .ConfigureServices(services => 
@@ -25,9 +27,12 @@ namespace ItemPriceWatcher.Test
                                 services.AddNHibernate<WatchItem>(CONN_STRING);
                             })
                             .Build();
-            using var serviceScope = host.Services.CreateScope();
+            serviceScope = host.Services.CreateScope();
             session = serviceScope.ServiceProvider.GetRequiredService<IMapperSession<WatchItem>>();
         }
+
+        [ClassCleanup]
+        public static void ClassDestruct() => serviceScope.Dispose();
 
         /// <summary>
         /// Passes if data can be retrieved from the test data retriever.
@@ -40,12 +45,37 @@ namespace ItemPriceWatcher.Test
             Assert.IsTrue(watchItems.Count > 0);
         }
 
+        /// <summary>
+        /// Passes if data can be added and retrieved from the SQL data retriever.
+        /// </summary>
         [TestMethod]
-        public void CanRetrieveDBData()
+        public async Task CanRetrieveDBData()
         {
-            IWatchItemAccess itemAccess = new SqlWatchItemAccess(session);
-            List<WatchItem> watchItems = itemAccess.GetWatchItems();
-            Assert.IsTrue(watchItems.Count > 0);
+            var testItem = new WatchItem
+            {
+                WatchItemName = "test",
+                WebsiteUrl = "https://www.google.com",
+                ItemPath = "/html"
+            };
+
+            session.BeginTransaction();
+            await session.Save(testItem);
+            await session.Commit();
+            session.CloseTransaction();
+
+            try
+            {
+                IWatchItemAccess itemAccess = new SqlWatchItemAccess(session);
+                List<WatchItem> watchItems = itemAccess.GetWatchItems();
+                Assert.IsTrue(watchItems.Count > 0);
+            }
+            finally
+            {
+                session.BeginTransaction();
+                await session.Delete(testItem);
+                await session.Commit();
+                session.CloseTransaction();
+            }
         }
     }
 }

@@ -1,9 +1,9 @@
 USE ItemPriceWatcher;
 
-INSERT INTO WatchItems (itemName, websiteUrl, itemPath)
+INSERT INTO WatchItem (WatchItemName, WebsiteUrl, ItemPath)
 VALUES
     ('TestItem', 'https://www.google.com', 'html');
 
 SELECT *
 FROM
-    ItemPriceWatcher.WatchItems;
+    ItemPriceWatcher.WatchItem;

@@ -18,7 +18,7 @@ namespace ItemPriceWatcher
 
         public decimal GetItemPrice()
         {
-            driver.Navigate().GoToUrl(watchItem.Url);
+            driver.Navigate().GoToUrl(watchItem.WebsiteUrl);
             return GetPriceFromPage();
         }
 

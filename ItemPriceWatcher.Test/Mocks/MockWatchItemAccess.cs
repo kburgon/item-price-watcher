@@ -15,7 +15,7 @@ namespace ItemPriceWatcher.Test.Mocks
                 {
                     WatchItemID = 1,
                     WatchItemName = "TestItem1",
-                    Url = @"https://www.google.com",
+                    WebsiteUrl = @"https://www.google.com",
                     ItemPath = @"html"
                 }
             };

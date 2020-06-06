@@ -11,10 +11,9 @@ namespace WatchItemdata.WatchItemAccess.ORM.SqlMaps
         public WatchItemMap()
         {
             Id(x => x.WatchItemID, x => {
-                x.Generator(Generators.Guid);
-                x.Type(NHibernateUtil.Guid);
-                x.Column("id");
-                x.UnsavedValue(Guid.Empty);
+                x.Generator(Generators.Identity);
+                x.Type(NHibernateUtil.Int32);
+                x.UnsavedValue(0);
             });
 
             Property(w => w.WatchItemName, w => 
@@ -24,7 +23,7 @@ namespace WatchItemdata.WatchItemAccess.ORM.SqlMaps
                 w.NotNullable(true);
             });
 
-            Property(w => w.Url, w => 
+            Property(w => w.WebsiteUrl, w => 
             {
                 w.Length(200);
                 w.Type(NHibernateUtil.StringClob);

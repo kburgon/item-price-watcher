@@ -30,7 +30,7 @@ namespace ItemPriceWatcher.Test
             {
                 WatchItemID = 0,
                 WatchItemName = "TestItem",
-                Url = @"https://www.google.com",
+                WebsiteUrl = @"https://www.google.com",
                 ItemPath = @"html"
             };
 
