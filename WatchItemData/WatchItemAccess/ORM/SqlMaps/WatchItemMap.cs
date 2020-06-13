@@ -1,41 +1,21 @@
-using System;
+using FluentNHibernate.Mapping;
 using NHibernate;
 using NHibernate.Mapping.ByCode;
-using NHibernate.Mapping.ByCode.Conformist;
 using WatchItemData;
 
 namespace WatchItemdata.WatchItemAccess.ORM.SqlMaps
 {
-    public class WatchItemMap : ClassMapping<WatchItem>
+    public class WatchItemMap : ClassMap<WatchItem>
     {
         public WatchItemMap()
         {
-            Id(x => x.WatchItemID, x => {
-                x.Generator(Generators.Identity);
-                x.Type(NHibernateUtil.Int32);
-                x.UnsavedValue(0);
-            });
-
-            Property(w => w.WatchItemName, w => 
-            {
-                w.Length(30);
-                w.Type(NHibernateUtil.StringClob);
-                w.NotNullable(true);
-            });
-
-            Property(w => w.WebsiteUrl, w => 
-            {
-                w.Length(200);
-                w.Type(NHibernateUtil.StringClob);
-                w.NotNullable(true);
-            });
-
-            Property(w => w.ItemPath, w => 
-            {
-                w.Length(200);
-                w.Type(NHibernateUtil.StringClob);
-                w.NotNullable(true);
-            });
+            Id(x => x.WatchItemID).GeneratedBy.Identity();
+            Map(p => p.WatchItemName).Default(string.Empty).Length(30);
+            Map(p => p.WebsiteUrl).Default(string.Empty).Length(200);
+            Map(p => p.ItemPath).Default(string.Empty).Length(200);
+            HasMany<WatchItemLog>(w => w.WatchItemLogs)
+                .Inverse()
+                .KeyColumns.Add("WatchItemID", mapping => mapping.Name("WatchItemID"));
         }
     }
 }

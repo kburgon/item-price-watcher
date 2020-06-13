@@ -8,6 +8,8 @@ using Microsoft.Extensions.Hosting;
 using WatchItemData.WatchItemAccess.ORM;
 using WatchItemData.WatchItemAccess.ORM.Sessions;
 using System.Threading.Tasks;
+using System;
+using System.Linq;
 
 namespace ItemPriceWatcher.Test
 {
@@ -68,6 +70,44 @@ namespace ItemPriceWatcher.Test
                 IWatchItemAccess itemAccess = new SqlWatchItemAccess(session);
                 List<WatchItem> watchItems = itemAccess.GetWatchItems();
                 Assert.IsTrue(watchItems.Count > 0);
+            }
+            finally
+            {
+                session.BeginTransaction();
+                await session.Delete(testItem);
+                await session.Commit();
+                session.CloseTransaction();
+            }
+        }
+
+        [TestMethod]
+        public async Task CanRetrieveLogsWithData()
+        {
+            var testItem = new WatchItem
+            {
+                WatchItemName = "test2",
+                WebsiteUrl = "https://www.google.com",
+                ItemPath = "/html",
+                WatchItemLogs = new List<WatchItemLog>
+                {
+                    new WatchItemLog
+                    {
+                        LoggedAt = DateTime.Now,
+                        Price = 12.55M
+                    }
+                }
+            };
+
+            session.BeginTransaction();
+            await session.Save(testItem);
+            await session.Commit();
+            session.CloseTransaction();
+
+            try
+            {
+                IWatchItemAccess itemAccess = new SqlWatchItemAccess(session);
+                List<WatchItem> watchItems = itemAccess.GetWatchItems();
+                Assert.AreEqual(testItem.WatchItemLogs.Last().Price, watchItems.Last().WatchItemLogs.Last().Price);
             }
             finally
             {

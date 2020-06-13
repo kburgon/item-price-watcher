@@ -1,7 +1,7 @@
+using FluentNHibernate.Cfg;
+using FluentNHibernate.Cfg.Db;
 using Microsoft.Extensions.DependencyInjection;
-using NHibernate.Cfg;
 using NHibernate.Cfg.MappingSchema;
-using NHibernate.Dialect;
 using NHibernate.Mapping.ByCode;
 using WatchItemData.WatchItemAccess.ORM.Sessions;
 
@@ -15,19 +15,10 @@ namespace WatchItemData.WatchItemAccess.ORM
             mapper.AddMappings(typeof(NHibernateExtensions).Assembly.ExportedTypes);
             HbmMapping domainMapping = mapper.CompileMappingForAllExplicitlyAddedEntities();
 
-            var configuration = new Configuration();
-            configuration.DataBaseIntegration(c => 
-            {
-                c.Dialect<MySQL5Dialect>();
-                c.ConnectionString = connectionString;
-                c.KeywordsAutoImport = Hbm2DDLKeyWords.AutoQuote;
-                c.SchemaAction = SchemaAutoAction.Update;
-                c.LogFormattedSql = true;
-                c.LogSqlInConsole = true;
-            });
+            var configuration = Fluently.Configure()
+                                        .Database(MySQLConfiguration.Standard.ConnectionString(c => c.Is(connectionString)))
+                                        .Mappings(m => m.FluentMappings.AddFromAssemblyOf<WatchItem>());
 
-            configuration.AddMapping(domainMapping);
-            
             var sessionFactory = configuration.BuildSessionFactory();
 
             services.AddSingleton(sessionFactory);
