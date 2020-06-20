@@ -1,4 +1,6 @@
-﻿using WatchItemData.WatchItemAccess;
+﻿using System;
+using System.Linq;
+using WatchItemData.WatchItemAccess;
 
 namespace ItemPriceWatcher
 {
@@ -8,18 +10,29 @@ namespace ItemPriceWatcher
 
         static void Main(string[] args)
         {
-            if (args.Length > 1 && args[1] == "--txtsource")
+            string username = string.Empty;
+            string password = string.Empty;
+
+            for (int i = 0; i < args.Length; i++)
             {
-                // itemGet = new SqlWatchItemAccess();
+                if (args[i] == "-u")
+                {
+                    username = args[i+1];
+                }
+                else if (args[i] == "-p")
+                {
+                    password = args[i+1];
+                }
             }
 
-            SendTestEmail(@"Hello, world!", "buburgo@gmail.com");
-        }
+            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+            {
+                Console.WriteLine("A username or password is required.");
+                return;
+            }
 
-        private static void SendTestEmail(string message, string emailAddress)
-        {
-            var sender = new EmailSender("kburgintegrations@gmail.com", "-----");
-            sender.SendMail(emailAddress, "TEST EMAIL", message);
+            EmailSender sender = new EmailSender(username, password);
+            sender.SendMail(username, "TEST EMAIL", "Hello, world!");
         }
     }
 }
