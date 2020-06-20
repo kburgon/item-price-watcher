@@ -1,9 +1,14 @@
-﻿using System;
-using System.IO;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
+using System;
+using System.IO;
+using WatchItemData;
+using WatchItemData.WatchItemAccess;
+using WatchItemData.WatchItemAccess.ORM;
+using WatchItemData.WatchItemAccess.ORM.Sessions;
 
 namespace ItemPriceWatcher
 {
@@ -11,6 +16,7 @@ namespace ItemPriceWatcher
     {
         // static IWatchItemAccess itemGet;
         public static IConfigurationRoot configuration;
+        public static IServiceScope serviceScope;
 
         static void Main(string[] args)
         {
@@ -44,8 +50,14 @@ namespace ItemPriceWatcher
             Log.Information("Building service provider");
             IServiceProvider serviceProvider = serviceCollection.BuildServiceProvider();
 
-            var connectionString = configuration.GetConnectionString("Development");
-            Console.WriteLine(connectionString);
+            Log.Information("Getting watch items");
+            var itemAccess = new SqlWatchItemAccess(serviceScope.ServiceProvider.GetRequiredService<IMapperSession<WatchItem>>());
+            var watchItems = itemAccess.GetWatchItems();
+            Log.Debug("Received Watch Items");
+            foreach (var item in watchItems)
+            {
+                Log.Debug($"Received item {item.WatchItemName}.");
+            }
         }
 
         private static void ConfigureServices(IServiceCollection serviceCollection)
@@ -64,6 +76,17 @@ namespace ItemPriceWatcher
 
             // Add access to generic IConfigurationRoot
             serviceCollection.AddSingleton<IConfigurationRoot>(configuration);
+
+            // Add service scope
+            var host = Host.CreateDefaultBuilder()
+                .ConfigureServices(services => 
+                {
+                    var connectionString = configuration.GetConnectionString("Development");
+                    services.AddNHibernate<WatchItem>(connectionString);
+                    services.AddNHibernate<WatchItemLog>(connectionString);
+                })
+                .Build();
+            serviceScope = host.Services.CreateScope();
         }
     }
 }

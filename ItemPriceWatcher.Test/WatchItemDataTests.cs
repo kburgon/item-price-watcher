@@ -1,15 +1,15 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Collections.Generic;
-using WatchItemData;
-using WatchItemData.WatchItemAccess;
 using ItemPriceWatcher.Test.Mocks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using WatchItemData;
+using WatchItemData.WatchItemAccess;
 using WatchItemData.WatchItemAccess.ORM;
 using WatchItemData.WatchItemAccess.ORM.Sessions;
-using System.Threading.Tasks;
-using System;
-using System.Linq;
 
 namespace ItemPriceWatcher.Test
 {
