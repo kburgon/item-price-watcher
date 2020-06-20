@@ -18,7 +18,7 @@ namespace ItemPriceWatcher
 
         private static void SendTestEmail(string message, string emailAddress)
         {
-            var sender = new EmailSender("buburgo@gmail.com", "7b6u1b9b9y3");
+            var sender = new EmailSender("kburgintegrations@gmail.com", "-----");
             sender.SendMail(emailAddress, "TEST EMAIL", message);
         }
     }
