@@ -7,8 +7,8 @@ namespace ItemPriceWatcher
 {
     public abstract class PriceCheckActionBase : IDisposable
     {
-        private IWebDriver driver;
-        private WatchItem watchItem;
+        protected IWebDriver driver;
+        protected WatchItem watchItem;
 
         public PriceCheckActionBase(WatchItem watchItem)
         {

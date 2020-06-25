@@ -6,9 +6,7 @@ namespace ItemPriceWatcher.Test.Mocks
     {
         public MockPriceCheckAction(WatchItem watchItem)
             :base(watchItem)
-        {
-            
-        }
+        { }
 
         protected override decimal GetPriceFromPage()
         {

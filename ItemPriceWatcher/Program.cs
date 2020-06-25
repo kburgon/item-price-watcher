@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 using System;
 using System.IO;
+using System.Threading.Tasks;
 using WatchItemData;
 using WatchItemData.WatchItemAccess;
 using WatchItemData.WatchItemAccess.ORM;
@@ -18,17 +19,17 @@ namespace ItemPriceWatcher
         public static IConfigurationRoot configuration;
         public static IServiceScope serviceScope;
 
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             Log.Logger = new LoggerConfiguration()
                 .WriteTo.Console()
-                .Enrich.FromLogContext()
+                // .Enrich.FromLogContext()
                 .CreateLogger();
             Log.Debug("Logger initialized");
 
             try
             {
-                RunApplication();
+                await RunApplicationAsync();
             }
             catch (Exception e)
             {
@@ -40,7 +41,7 @@ namespace ItemPriceWatcher
             }
         }
 
-        private static void RunApplication()
+        private static async System.Threading.Tasks.Task RunApplicationAsync()
         {
             Log.Information("Starting application");
             Log.Information("Configuring services");
@@ -53,10 +54,14 @@ namespace ItemPriceWatcher
             Log.Information("Getting watch items");
             var itemAccess = new SqlWatchItemAccess(serviceScope.ServiceProvider.GetRequiredService<IMapperSession<WatchItem>>());
             var watchItems = itemAccess.GetWatchItems();
-            Log.Debug("Received Watch Items");
+            Log.Information("Received Watch Items");
             foreach (var item in watchItems)
             {
-                Log.Debug($"Received item {item.WatchItemName}.");
+                Log.Information($"Received item {item.WatchItemName}.");
+                using var checker = new PriceCheckAction(item);
+                var price = checker.GetItemPrice();
+                Log.Information($"Price of {item.WatchItemName}: ${price}");
+                await itemAccess.AddLog(item, new WatchItemLog { Price = price, LoggedAt = DateTime.Now });
             }
         }
 

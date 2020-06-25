@@ -11,6 +11,7 @@ namespace WatchItemData.WatchItemAccess.ORM.SqlMaps
             Map(p => p.Price);
             References(w => w.WatchItem)
                 .Class<WatchItem>()
+                .Cascade.SaveUpdate()
                 .Columns("WatchItemID");
         }
     }

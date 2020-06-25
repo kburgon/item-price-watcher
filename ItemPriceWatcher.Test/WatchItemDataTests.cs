@@ -117,5 +117,51 @@ namespace ItemPriceWatcher.Test
                 session.CloseTransaction();
             }
         }
+
+        [TestMethod]
+        public async Task CanUpdateLogsWithData()
+        {
+            var access = new SqlWatchItemAccess(session);
+            var testItem = new WatchItem
+            {
+                WatchItemName = "test2",
+                WebsiteUrl = "https://www.google.com",
+                ItemPath = "/html",
+                WatchItemLogs = new List<WatchItemLog>
+                {
+                    new WatchItemLog
+                    {
+                        LoggedAt = DateTime.Now,
+                        Price = 12.55M
+                    }
+                }
+            };
+
+            session.BeginTransaction();
+
+            // TODO: Review exception "object references an unsaved transient instance - save the transient instance before flushing or set cascade action for the property to something that would make it autosave. Type: WatchItemData.WatchItemLog, Entity: WatchItemData.WatchItemLog'"
+            await session.Save(testItem);
+            await session.Commit();
+            session.CloseTransaction();
+
+            try
+            {
+                await access.AddLog(testItem, new WatchItemLog
+                {
+                    LoggedAt = DateTime.Now,
+                    Price = 12.34M
+                });
+
+                var results = access.GetWatchItems();
+                Assert.IsTrue(results.Last().WatchItemLogs.Count == 2);
+            }
+            finally
+            {
+                session.BeginTransaction();
+                await session.Delete(testItem);
+                await session.Commit();
+                session.CloseTransaction();
+            }
+        }
     }
 }

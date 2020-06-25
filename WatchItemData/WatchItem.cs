@@ -10,6 +10,6 @@ namespace WatchItemData
         public virtual string WatchItemName { get; set; }
         public virtual string WebsiteUrl { get; set; }
         public virtual string ItemPath { get; set; }
-        public virtual IEnumerable<WatchItemLog> WatchItemLogs { get; set; }
+        public virtual IList<WatchItemLog> WatchItemLogs { get; set; }
     }
 }
