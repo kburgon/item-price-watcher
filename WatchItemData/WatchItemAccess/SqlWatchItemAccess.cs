@@ -25,5 +25,17 @@ namespace WatchItemData.WatchItemAccess
             await session.Commit();
             session.CloseTransaction();
         }
+
+        /// <summary>
+        /// Saves the given <paramref name="item"/> to the database.
+        /// </summary>
+        /// <param name="item"> The WatchItem object to save to the database. </param>
+        public async Task Save(WatchItem item)
+        {
+            session.BeginTransaction();
+            await session.Save(item);
+            await session.Commit();
+            session.CloseTransaction();
+        }
     }
 }

@@ -2,6 +2,7 @@ using WatchItemData;
 using WatchItemData.WatchItemAccess;
 using System.Collections.Generic;
 using System;
+using System.Threading.Tasks;
 
 namespace ItemPriceWatcher.Test.Mocks
 {
@@ -19,6 +20,11 @@ namespace ItemPriceWatcher.Test.Mocks
                     ItemPath = @"html"
                 }
             };
+        }
+
+        public Task Save(WatchItem testItem)
+        {
+            throw new NotImplementedException();
         }
     }
 }

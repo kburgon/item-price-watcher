@@ -53,21 +53,12 @@ namespace ItemPriceWatcher.Test
         [TestMethod]
         public async Task CanRetrieveDBData()
         {
-            var testItem = new WatchItem
-            {
-                WatchItemName = "test",
-                WebsiteUrl = "https://www.google.com",
-                ItemPath = "/html"
-            };
-
-            session.BeginTransaction();
-            await session.Save(testItem);
-            await session.Commit();
-            session.CloseTransaction();
+            var testItem = CreateTestItem();
+            IWatchItemAccess itemAccess = new SqlWatchItemAccess(session);
+            await itemAccess.Save(testItem);
 
             try
             {
-                IWatchItemAccess itemAccess = new SqlWatchItemAccess(session);
                 List<WatchItem> watchItems = itemAccess.GetWatchItems();
                 Assert.IsTrue(watchItems.Count > 0);
             }
@@ -83,31 +74,12 @@ namespace ItemPriceWatcher.Test
         [TestMethod]
         public async Task CanRetrieveLogsWithData()
         {
-            var testItem = new WatchItem
-            {
-                WatchItemName = "test2",
-                WebsiteUrl = "https://www.google.com",
-                ItemPath = "/html",
-                WatchItemLogs = new List<WatchItemLog> { }
-            };
-
-            var log = new WatchItemLog
-            {
-                LoggedAt = DateTime.Now,
-                Price = 12.55M,
-                WatchItem = testItem
-            };
-
-            testItem.WatchItemLogs.Add(log);
-
-            session.BeginTransaction();
-            await session.Save(testItem);
-            await session.Commit();
-            session.CloseTransaction();
+            var testItem = CreateTestItem();
+            IWatchItemAccess itemAccess = new SqlWatchItemAccess(session);
+            await itemAccess.Save(testItem);
 
             try
             {
-                IWatchItemAccess itemAccess = new SqlWatchItemAccess(session);
                 List<WatchItem> watchItems = itemAccess.GetWatchItems();
                 Assert.AreEqual(testItem.WatchItemLogs.Last().Price, watchItems.Last().WatchItemLogs.Last().Price);
             }
@@ -124,27 +96,8 @@ namespace ItemPriceWatcher.Test
         public async Task CanUpdateLogsWithData()
         {
             var access = new SqlWatchItemAccess(session);
-            var testItem = new WatchItem
-            {
-                WatchItemName = "test3",
-                WebsiteUrl = "https://www.google.com",
-                ItemPath = "/html",
-                WatchItemLogs = new List<WatchItemLog> { }
-            };
-
-            var log = new WatchItemLog
-            {
-                LoggedAt = DateTime.Now,
-                Price = 12.55M,
-                WatchItem = testItem
-            };
-
-            testItem.WatchItemLogs.Add(log);
-
-            session.BeginTransaction();
-            await session.Save(testItem);
-            await session.Commit();
-            session.CloseTransaction();
+            var testItem = CreateTestItem();
+            await access.Save(testItem);
 
             try
             {
@@ -164,6 +117,27 @@ namespace ItemPriceWatcher.Test
                 await session.Commit();
                 session.CloseTransaction();
             }
+        }
+
+        private WatchItem CreateTestItem()
+        {
+            var item = new WatchItem
+            {
+                WatchItemName = "test",
+                WebsiteUrl = "https://www.google.com",
+                ItemPath = "/html",
+                WatchItemLogs = new List<WatchItemLog> { }
+            };
+
+            var log = new WatchItemLog
+            {
+                LoggedAt = DateTime.Now,
+                Price = 12.55M,
+                WatchItem = item
+            };
+
+            item.WatchItemLogs.Add(log);
+            return item;
         }
     }
 }
