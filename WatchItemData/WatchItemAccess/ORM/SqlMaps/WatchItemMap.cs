@@ -14,9 +14,10 @@ namespace WatchItemdata.WatchItemAccess.ORM.SqlMaps
             Map(p => p.WebsiteUrl).Default(string.Empty).Length(200);
             Map(p => p.ItemPath).Default(string.Empty).Length(200);
             HasMany<WatchItemLog>(w => w.WatchItemLogs)
-                .Cascade.DeleteOrphan()
                 .Inverse()
-                .Fetch.Join().KeyColumn("WatchItemID");
+                .Cascade.AllDeleteOrphan()
+                .Fetch.Join().KeyColumn("WatchItemID")
+                .AsBag();
         }
     }
 }

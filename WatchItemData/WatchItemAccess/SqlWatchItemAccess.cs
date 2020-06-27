@@ -18,6 +18,7 @@ namespace WatchItemData.WatchItemAccess
 
         public async Task AddLog(WatchItem watchItem, WatchItemLog watchItemLog)
         {
+            watchItemLog.WatchItem = watchItem;
             watchItem.WatchItemLogs.Add(watchItemLog);
             session.BeginTransaction();
             await session.Save(watchItem);

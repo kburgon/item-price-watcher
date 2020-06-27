@@ -88,15 +88,17 @@ namespace ItemPriceWatcher.Test
                 WatchItemName = "test2",
                 WebsiteUrl = "https://www.google.com",
                 ItemPath = "/html",
-                WatchItemLogs = new List<WatchItemLog>
-                {
-                    new WatchItemLog
-                    {
-                        LoggedAt = DateTime.Now,
-                        Price = 12.55M
-                    }
-                }
+                WatchItemLogs = new List<WatchItemLog> { }
             };
+
+            var log = new WatchItemLog
+            {
+                LoggedAt = DateTime.Now,
+                Price = 12.55M,
+                WatchItem = testItem
+            };
+
+            testItem.WatchItemLogs.Add(log);
 
             session.BeginTransaction();
             await session.Save(testItem);
@@ -124,22 +126,22 @@ namespace ItemPriceWatcher.Test
             var access = new SqlWatchItemAccess(session);
             var testItem = new WatchItem
             {
-                WatchItemName = "test2",
+                WatchItemName = "test3",
                 WebsiteUrl = "https://www.google.com",
                 ItemPath = "/html",
-                WatchItemLogs = new List<WatchItemLog>
-                {
-                    new WatchItemLog
-                    {
-                        LoggedAt = DateTime.Now,
-                        Price = 12.55M
-                    }
-                }
+                WatchItemLogs = new List<WatchItemLog> { }
             };
 
-            session.BeginTransaction();
+            var log = new WatchItemLog
+            {
+                LoggedAt = DateTime.Now,
+                Price = 12.55M,
+                WatchItem = testItem
+            };
 
-            // TODO: Review exception "object references an unsaved transient instance - save the transient instance before flushing or set cascade action for the property to something that would make it autosave. Type: WatchItemData.WatchItemLog, Entity: WatchItemData.WatchItemLog'"
+            testItem.WatchItemLogs.Add(log);
+
+            session.BeginTransaction();
             await session.Save(testItem);
             await session.Commit();
             session.CloseTransaction();
