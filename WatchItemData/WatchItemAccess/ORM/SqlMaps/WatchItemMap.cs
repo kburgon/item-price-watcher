@@ -1,6 +1,4 @@
 using FluentNHibernate.Mapping;
-using NHibernate;
-using NHibernate.Mapping.ByCode;
 using WatchItemData;
 
 namespace WatchItemdata.WatchItemAccess.ORM.SqlMaps

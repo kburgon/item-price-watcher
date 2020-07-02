@@ -2,7 +2,7 @@ USE ItemPriceWatcher;
 
 INSERT INTO WatchItem (WatchItemName, WebsiteUrl, ItemPath)
 VALUES
-    ('TestItem', 'https://www.google.com', 'html');
+    ('Raspberry Pi Zero', 'https://www.adafruit.com/product/3708', '//span[@itemprop=''price'']');
 
 SELECT *
 FROM

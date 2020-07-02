@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using WatchItemData;
 using WatchItemData.WatchItemAccess;
@@ -23,8 +24,8 @@ namespace ItemPriceWatcher
         {
             Log.Logger = new LoggerConfiguration()
                 .WriteTo.Console()
-                // .Enrich.FromLogContext()
                 .CreateLogger();
+
             Log.Debug("Logger initialized");
 
             try
@@ -55,12 +56,20 @@ namespace ItemPriceWatcher
             var itemAccess = new SqlWatchItemAccess(serviceScope.ServiceProvider.GetRequiredService<IMapperSession<WatchItem>>());
             var watchItems = itemAccess.GetWatchItems();
             Log.Information("Received Watch Items");
+            
             foreach (var item in watchItems)
             {
                 Log.Information($"Received item {item.WatchItemName}.");
                 using var checker = new PriceCheckAction(item);
                 var price = checker.GetItemPrice();
                 Log.Information($"Price of {item.WatchItemName}: ${price}");
+
+                if (price < item.WatchItemLogs.Last().Price)
+                {
+                    using var email = new EmailSender("", "");
+                    email.SendMail("", $@"Price Drop: {item.WatchItemName}", $@"Previous price: ${item.WatchItemLogs.Last().Price}.  Current price: ${price}.");
+                }
+
                 await itemAccess.AddLog(item, new WatchItemLog { Price = price, LoggedAt = DateTime.Now });
             }
         }
