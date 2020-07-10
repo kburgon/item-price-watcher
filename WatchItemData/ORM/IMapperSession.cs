@@ -1,7 +1,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace WatchItemData.WatchItemAccess.ORM
+namespace WatchItemData.ORM
 {
     /// <summary>
     /// Provides session actions to perform CRUD actions with the type <typeparamref name="T"/> to the database.

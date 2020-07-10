@@ -8,8 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using WatchItemData;
-using WatchItemData.WatchItemAccess;
-using WatchItemData.WatchItemAccess.ORM;
+using WatchItemData.ORM;
 
 namespace ItemPriceWatcher
 {

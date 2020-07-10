@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WatchItemData;
-using WatchItemData.WatchItemAccess.ORM;
+using WatchItemData.ORM;
 
 namespace ItemPriceWatcher.Test
 {

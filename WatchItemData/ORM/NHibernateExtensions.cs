@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using NHibernate.Cfg.MappingSchema;
 using NHibernate.Mapping.ByCode;
 
-namespace WatchItemData.WatchItemAccess.ORM
+namespace WatchItemData.ORM
 {
     public static class NHibernateExtensions
     {
