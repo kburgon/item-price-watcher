@@ -132,11 +132,10 @@ namespace ItemPriceWatcher.Test
             var log = new WatchItemLog
             {
                 LoggedAt = DateTime.Now,
-                Price = 12.55M,
-                WatchItem = item
+                Price = 12.55M
             };
 
-            item.WatchItemLogs.Add(log);
+            item.AddLog(log);
             return item;
         }
     }

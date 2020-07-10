@@ -14,6 +14,15 @@ namespace WatchItemData
         public virtual IList<WatchItemLog> WatchItemLogs { get; set; }
     }
 
+    public static class WatchItemExtensions
+    {
+        public static void AddLog(this WatchItem item, WatchItemLog log)
+        {
+            log.WatchItem = item;
+            item.WatchItemLogs.Add(log);
+        }
+    }
+
     public class WatchItemMap : ClassMap<WatchItem>
     {
         public WatchItemMap()
