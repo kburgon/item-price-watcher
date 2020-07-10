@@ -1,4 +1,5 @@
 using System;
+using FluentNHibernate.Mapping;
 
 namespace WatchItemData
 {
@@ -10,5 +11,18 @@ namespace WatchItemData
         public virtual int WatchItemID { get; set; }
         public virtual DateTime LoggedAt { get; set; }
         public virtual decimal Price { get; set; }
+    }
+
+    public class WatchItemLogMap : ClassMap<WatchItemLog>
+    {
+        public WatchItemLogMap()
+        {
+            Id(x => x.WatchItemLogID).GeneratedBy.Identity();
+            Map(p => p.LoggedAt);
+            Map(p => p.Price);
+            References(w => w.WatchItem)
+                .Class<WatchItem>()
+                .Columns("WatchItemID");
+        }
     }
 }
