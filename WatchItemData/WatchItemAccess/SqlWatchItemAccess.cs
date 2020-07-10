@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using WatchItemData.WatchItemAccess.ORM.Sessions;
+using WatchItemData.WatchItemAccess.ORM;
 
 namespace WatchItemData.WatchItemAccess
 {

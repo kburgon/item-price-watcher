@@ -2,7 +2,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using NHibernate;
 
-namespace WatchItemData.WatchItemAccess.ORM.Sessions
+namespace WatchItemData.WatchItemAccess.ORM
 {
     /// <summary>
     /// Session for mapping the object <typeref name="T"/> to the database.

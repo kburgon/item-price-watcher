@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 using WatchItemData;
 using WatchItemData.WatchItemAccess;
 using WatchItemData.WatchItemAccess.ORM;
-using WatchItemData.WatchItemAccess.ORM.Sessions;
 
 namespace ItemPriceWatcher
 {

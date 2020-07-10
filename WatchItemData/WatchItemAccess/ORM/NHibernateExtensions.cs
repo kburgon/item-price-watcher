@@ -3,7 +3,6 @@ using FluentNHibernate.Cfg.Db;
 using Microsoft.Extensions.DependencyInjection;
 using NHibernate.Cfg.MappingSchema;
 using NHibernate.Mapping.ByCode;
-using WatchItemData.WatchItemAccess.ORM.Sessions;
 
 namespace WatchItemData.WatchItemAccess.ORM
 {
