@@ -5,7 +5,7 @@ using NHibernate;
 namespace WatchItemData.WatchItemAccess.ORM.Sessions
 {
     /// <summary>
-    /// Session for mapping the given object <typeref name="T"/> to the database.
+    /// Session for mapping the object <typeref name="T"/> to the database.
     /// </summary>
     /// <typeparam name="T"> The object to map to the database. </typeparam>
     public class MapperSession<T> : IMapperSession<T>
@@ -19,18 +19,37 @@ namespace WatchItemData.WatchItemAccess.ORM.Sessions
         /// <param name="session"></param>
         public MapperSession(ISession session) => this.session = session;
 
+        /// <inheritdoc/>
+        public Task SafeSaveAsync(T entity)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        /// <inheritdoc/>
+        public Task SafeDeleteAsync(T entity)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        /// <inheritdoc/>
         public IQueryable<T> Objects => session.Query<T>();
 
+        /// <inheritdoc/>
         public void BeginTransaction() => transaction = session.BeginTransaction();
 
+        /// <inheritdoc/>
         public async Task Commit() => await transaction.CommitAsync();
 
+        /// <inheritdoc/>
         public async Task Rollback() => await transaction.RollbackAsync();
 
+        /// <inheritdoc/>
         public async Task Save(T entity) => await session.SaveAsync(entity);
 
+        /// <inheritdoc/>
         public async Task Delete(T entity) => await session.DeleteAsync(entity);
 
+        /// <inheritdoc/>
         public void CloseTransaction()
         {
             transaction?.Dispose();

@@ -1,4 +1,3 @@
-using ItemPriceWatcher.Test.Mocks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -37,17 +36,6 @@ namespace ItemPriceWatcher.Test
         public static void ClassDestruct() => serviceScope.Dispose();
 
         /// <summary>
-        /// Passes if data can be retrieved from the test data retriever.
-        /// </summary>
-        [TestMethod]
-        public void CanRetreiveMockData()
-        {
-            IWatchItemAccess itemAccess = new MockWatchItemAccess();
-            List<WatchItem> watchItems = itemAccess.GetWatchItems();
-            Assert.IsTrue(watchItems.Count > 0);
-        }
-
-        /// <summary>
         /// Passes if data can be added and retrieved from the SQL data retriever.
         /// </summary>
         [TestMethod]
@@ -71,6 +59,9 @@ namespace ItemPriceWatcher.Test
             }
         }
 
+        /// <summary>
+        /// Passes if a test item can be saved and retrieved from the database with logs.
+        /// </summary>
         [TestMethod]
         public async Task CanRetrieveLogsWithData()
         {
@@ -92,6 +83,9 @@ namespace ItemPriceWatcher.Test
             }
         }
 
+        /// <summary>
+        /// Passes if a WatchItem object can add a new log and it persists to the database.
+        /// </summary>
         [TestMethod]
         public async Task CanUpdateLogsWithData()
         {
