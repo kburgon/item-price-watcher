@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using NHibernate;
@@ -20,15 +21,30 @@ namespace WatchItemData.WatchItemAccess.ORM
         public MapperSession(ISession session) => this.session = session;
 
         /// <inheritdoc/>
-        public Task SafeSaveAsync(T entity)
-        {
-            throw new System.NotImplementedException();
-        }
+        public async Task SafeSaveAsync(T entity) 
+            => await PerformSafeTransactionAsync(async () => await Save(entity));
 
         /// <inheritdoc/>
-        public Task SafeDeleteAsync(T entity)
+        public async Task SafeDeleteAsync(T entity) 
+            => await PerformSafeTransactionAsync(async () => await Delete(entity));
+
+        private async Task PerformSafeTransactionAsync(Action action)
         {
-            throw new System.NotImplementedException();
+            try
+            {
+                BeginTransaction();
+                action();
+                await Commit();
+            }
+            catch
+            {
+                await Rollback();
+                throw;
+            }
+            finally
+            {
+                CloseTransaction();
+            }
         }
 
         /// <inheritdoc/>

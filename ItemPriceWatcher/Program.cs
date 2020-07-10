@@ -52,8 +52,8 @@ namespace ItemPriceWatcher
             IServiceProvider serviceProvider = serviceCollection.BuildServiceProvider();
 
             Log.Information("Getting watch items");
-            var itemAccess = new SqlWatchItemAccess(serviceScope.ServiceProvider.GetRequiredService<IMapperSession<WatchItem>>());
-            var watchItems = itemAccess.GetWatchItems();
+            var session = serviceScope.ServiceProvider.GetRequiredService<IMapperSession<WatchItem>>();
+            var watchItems = session.Objects.ToList();
             Log.Information("Received Watch Items");
             
             foreach (var item in watchItems)
@@ -69,7 +69,8 @@ namespace ItemPriceWatcher
                     email.SendMail("", $@"Price Drop: {item.WatchItemName}", $@"Previous price: ${item.WatchItemLogs.Last().Price}.  Current price: ${price}.");
                 }
 
-                await itemAccess.AddLog(item, new WatchItemLog { Price = price, LoggedAt = DateTime.Now });
+                item.AddLog(new WatchItemLog { Price = price, LoggedAt = DateTime.Now });
+                await session.SafeSaveAsync(item);
             }
         }
 

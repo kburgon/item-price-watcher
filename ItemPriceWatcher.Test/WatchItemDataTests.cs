@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WatchItemData;
-using WatchItemData.WatchItemAccess;
 using WatchItemData.WatchItemAccess.ORM;
 
 namespace ItemPriceWatcher.Test
@@ -41,20 +40,16 @@ namespace ItemPriceWatcher.Test
         public async Task CanRetrieveDBData()
         {
             var testItem = CreateTestItem();
-            IWatchItemAccess itemAccess = new SqlWatchItemAccess(session);
-            await itemAccess.Save(testItem);
+            await session.SafeSaveAsync(testItem);
 
             try
             {
-                List<WatchItem> watchItems = itemAccess.GetWatchItems();
+                List<WatchItem> watchItems = session.Objects.ToList();
                 Assert.IsTrue(watchItems.Count > 0);
             }
             finally
             {
-                session.BeginTransaction();
-                await session.Delete(testItem);
-                await session.Commit();
-                session.CloseTransaction();
+                await session.SafeDeleteAsync(testItem);
             }
         }
 
@@ -65,20 +60,16 @@ namespace ItemPriceWatcher.Test
         public async Task CanRetrieveLogsWithData()
         {
             var testItem = CreateTestItem();
-            IWatchItemAccess itemAccess = new SqlWatchItemAccess(session);
-            await itemAccess.Save(testItem);
+            await session.SafeSaveAsync(testItem);
 
             try
             {
-                List<WatchItem> watchItems = itemAccess.GetWatchItems();
+                List<WatchItem> watchItems = session.Objects.ToList();
                 Assert.AreEqual(testItem.WatchItemLogs.Last().Price, watchItems.Last().WatchItemLogs.Last().Price);
             }
             finally
             {
-                session.BeginTransaction();
-                await session.Delete(testItem);
-                await session.Commit();
-                session.CloseTransaction();
+                await session.SafeDeleteAsync(testItem);
             }
         }
 
@@ -88,27 +79,24 @@ namespace ItemPriceWatcher.Test
         [TestMethod]
         public async Task CanUpdateLogsWithData()
         {
-            var access = new SqlWatchItemAccess(session);
             var testItem = CreateTestItem();
-            await access.Save(testItem);
+            await session.SafeSaveAsync(testItem);
 
             try
             {
-                await access.AddLog(testItem, new WatchItemLog
+                testItem.AddLog(new WatchItemLog
                 {
                     LoggedAt = DateTime.Now,
                     Price = 12.34M
                 });
 
-                var results = access.GetWatchItems();
+                await session.SafeSaveAsync(testItem);
+                var results = session.Objects.ToList();
                 Assert.IsTrue(results.Last().WatchItemLogs.Count == 2);
             }
             finally
             {
-                session.BeginTransaction();
-                await session.Delete(testItem);
-                await session.Commit();
-                session.CloseTransaction();
+                await session.SafeDeleteAsync(testItem);
             }
         }
 
