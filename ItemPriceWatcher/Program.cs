@@ -6,6 +6,7 @@ using Serilog;
 using System;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using WatchItemData;
 using WatchItemData.ORM;
@@ -14,7 +15,6 @@ namespace ItemPriceWatcher
 {
     class Program
     {
-        // static IWatchItemAccess itemGet;
         public static IConfigurationRoot configuration;
         public static IServiceScope serviceScope;
 
@@ -57,19 +57,7 @@ namespace ItemPriceWatcher
             
             foreach (var item in watchItems)
             {
-                Log.Information($"Received item {item.WatchItemName}.");
-                using var checker = new PriceCheckAction(item);
-                var price = checker.GetItemPrice();
-                Log.Information($"Price of {item.WatchItemName}: ${price}");
-
-                if (price < item.WatchItemLogs.Last().Price)
-                {
-                    using var email = new EmailSender("", "");
-                    email.SendMail("", $@"Price Drop: {item.WatchItemName}", $@"Previous price: ${item.WatchItemLogs.Last().Price}.  Current price: ${price}.");
-                }
-
-                item.AddLog(new WatchItemLog { Price = price, LoggedAt = DateTime.Now });
-                await session.SafeSaveAsync(item);
+                await NewMethod(session, item);
             }
         }
 
@@ -100,6 +88,27 @@ namespace ItemPriceWatcher
                 })
                 .Build();
             serviceScope = host.Services.CreateScope();
+        }
+
+        private static async Task NewMethod(IMapperSession<WatchItem> session, WatchItem item)
+        {
+            Log.Information($"Received item {item.WatchItemName}.");
+            var checker = new PriceCheckAction(item);
+            var price = checker.GetItemPrice();
+            Log.Information($"Price of {item.WatchItemName}: ${price}");
+
+            if (price < item.WatchItemLogs.Last().Price)
+            {
+                using var email = new EmailSender("", "");
+                foreach (var contact in item.Contacts)
+                {
+                    Log.Information($"Sending email to {contact.GetFullName()}");
+                    email.SendMail(contact.Email, $@"Price Drop: {item.WatchItemName}", $@"Previous price: ${item.WatchItemLogs.Last().Price}.  Current price: ${price}.");
+                }
+            }
+
+            item.AddLog(new WatchItemLog { Price = price, LoggedAt = DateTime.Now });
+            await session.SafeSaveAsync(item);
         }
     }
 }
