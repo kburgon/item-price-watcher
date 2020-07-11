@@ -100,6 +100,53 @@ namespace ItemPriceWatcher.Test
             }
         }
 
+        /// <summary>
+        /// Test passes if a contact object can be added to a WatchItem and saved to the DB.
+        /// </summary>
+        [TestMethod]
+        public async Task CanPersistContact()
+        {
+            var testItem = CreateTestItem();
+            
+            try
+            {
+                await session.SafeSaveAsync(testItem);
+                var results = session.Objects.ToList();
+                Assert.IsTrue(results.Last().Contacts.Count == 1);
+            }
+            finally
+            {
+                await session.SafeDeleteAsync(testItem);
+            }
+        }
+
+        [TestMethod]
+        public async Task CanAddMultipleContacts()
+        {
+            var testItem = CreateTestItem();
+
+            try
+            {
+                await session.SafeSaveAsync(testItem);
+                var contact = new Contact
+                {
+                    FirstName = "Fred",
+                    Surname = "Mercury",
+                    Email = "fmTest@queen.com"
+                };
+
+                testItem.AddContact(contact);
+                await session.SafeSaveAsync(testItem);
+                
+                var results = session.Objects.ToList();
+                Assert.IsTrue(results.Last().Contacts.Last().Email == contact.Email);
+            }
+            finally
+            {
+                await session.SafeDeleteAsync(testItem);
+            }
+        }
+
         private WatchItem CreateTestItem()
         {
             var item = new WatchItem
@@ -107,7 +154,8 @@ namespace ItemPriceWatcher.Test
                 WatchItemName = "test",
                 WebsiteUrl = "https://www.google.com",
                 ItemPath = "/html",
-                WatchItemLogs = new List<WatchItemLog> { }
+                WatchItemLogs = new List<WatchItemLog> { },
+                Contacts = new List<Contact> { }
             };
 
             var log = new WatchItemLog
@@ -116,7 +164,15 @@ namespace ItemPriceWatcher.Test
                 Price = 12.55M
             };
 
+            var contact = new Contact
+            {
+                FirstName = "Kevin",
+                Surname = "BurgonInt",
+                Email = "kburgintegrations@gmail.com"
+            };
+
             item.AddLog(log);
+            item.AddContact(contact);
             return item;
         }
     }

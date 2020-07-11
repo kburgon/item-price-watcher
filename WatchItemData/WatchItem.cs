@@ -22,6 +22,12 @@ namespace WatchItemData
             log.WatchItem = item;
             item.WatchItemLogs.Add(log);
         }
+
+        public static void AddContact(this WatchItem item, Contact contact)
+        {
+            contact.WatchItem = item;
+            item.Contacts.Add(contact);
+        }
     }
 
     public class WatchItemMap : ClassMap<WatchItem>
