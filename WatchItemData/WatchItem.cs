@@ -12,6 +12,7 @@ namespace WatchItemData
         public virtual string WebsiteUrl { get; set; }
         public virtual string ItemPath { get; set; }
         public virtual IList<WatchItemLog> WatchItemLogs { get; set; }
+        public virtual IList<Contact> Contacts { get; set; }
     }
 
     public static class WatchItemExtensions
@@ -35,7 +36,12 @@ namespace WatchItemData
                 .Inverse()
                 .Cascade.AllDeleteOrphan()
                 .Fetch.Join().KeyColumn("WatchItemID")
-                .AsBag();
+                .AsList();
+            HasMany<Contact>(w => w.Contacts)
+                .Inverse()
+                .Cascade.AllDeleteOrphan()
+                .Fetch.Join().KeyColumn("ContactID")
+                .AsList();
         }
     }
 }
