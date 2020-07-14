@@ -66,7 +66,7 @@ namespace ItemPriceWatcher
 
                 if (price < item.WatchItemLogs.Last().Price && item.Contacts.Any())
                 {
-                    using var email = new EmailSender("", "");
+                    var email = serviceScope.ServiceProvider.GetRequiredService<EmailSender>();
                     foreach (var contact in item.Contacts)
                     {
                         Log.Information($"Sending email to {contact.GetFullName()}");
@@ -95,6 +95,11 @@ namespace ItemPriceWatcher
                 .AddJsonFile("appsettings.json", false)
                 .Build();
 
+            // Declare email sender singleton;
+            var emailUser = configuration.GetSection("Smtp").GetValue<string>("Username");
+            var emailPass = configuration.GetSection("Smtp").GetValue<string>("Password");
+            var emailSender = new EmailSender(emailUser, emailPass);
+
             // Add access to generic IConfigurationRoot
             serviceCollection.AddSingleton<IConfigurationRoot>(configuration);
 
@@ -104,6 +109,7 @@ namespace ItemPriceWatcher
                 {
                     var connectionString = configuration.GetConnectionString("Development");
                     services.AddNHibernate<WatchItem>(connectionString);
+                    services.AddSingleton<EmailSender>(emailSender);
                 })
                 .Build();
             serviceScope = host.Services.CreateScope();
