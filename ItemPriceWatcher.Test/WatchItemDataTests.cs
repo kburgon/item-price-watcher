@@ -92,7 +92,7 @@ namespace ItemPriceWatcher.Test
 
                 await session.SafeSaveAsync(testItem);
                 var results = session.Objects.ToList();
-                Assert.IsTrue(results.Last().WatchItemLogs.Count == 2);
+                Assert.IsTrue(results.Last().WatchItemLogs.Last().Price == testItem.WatchItemLogs.Last().Price);
             }
             finally
             {
@@ -147,6 +147,29 @@ namespace ItemPriceWatcher.Test
             }
         }
 
+        /// <summary>
+        /// Tests to ensure that all collections can be visited.  This was created after loading a collection threw exceptions.
+        /// </summary>
+        [TestMethod]
+        public void CanIterateThroughWatchItems()
+        {
+            var watchItems = session.Objects.ToArray();
+            foreach (var item in watchItems)
+            {
+                foreach (var log in item.WatchItemLogs)
+                {
+                    // Visit each element in the list
+                }
+
+                foreach (var contact in item.Contacts)
+                {
+                    // Visit each element in the list
+                }
+            }
+
+            // No exceptions were thrown.  Test passed!
+        }
+
         private WatchItem CreateTestItem()
         {
             var item = new WatchItem
@@ -155,7 +178,7 @@ namespace ItemPriceWatcher.Test
                 WebsiteUrl = "https://www.google.com",
                 ItemPath = "/html",
                 WatchItemLogs = new List<WatchItemLog> { },
-                Contacts = new List<Contact> { }
+                Contacts = new HashSet<Contact> { }
             };
 
             var log = new WatchItemLog

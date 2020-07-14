@@ -6,7 +6,6 @@ using Serilog;
 using System;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using WatchItemData;
 using WatchItemData.ORM;
@@ -36,13 +35,13 @@ namespace ItemPriceWatcher
             }
             finally
             {
+                serviceScope.Dispose();
                 Log.CloseAndFlush();
             }
         }
 
         private static async System.Threading.Tasks.Task RunApplicationAsync()
         {
-            Log.Information("Starting application");
             Log.Information("Configuring services");
             ServiceCollection serviceCollection = new ServiceCollection();
             ConfigureServices(serviceCollection);
@@ -53,11 +52,32 @@ namespace ItemPriceWatcher
             Log.Information("Getting watch items");
             var session = serviceScope.ServiceProvider.GetRequiredService<IMapperSession<WatchItem>>();
             var watchItems = session.Objects.ToList();
-            Log.Information("Received Watch Items");
+            Log.Information($"Received {watchItems.Count()} Watch Item(s)");
             
             foreach (var item in watchItems)
             {
-                await NewMethod(session, item);
+                Log.Information($"Received item {item.WatchItemName}");
+                decimal price;
+                using (var checker = new PriceCheckAction(item))
+                {
+                    price = checker.GetItemPrice();
+                    Log.Information($"Price of {item.WatchItemName}: ${price}");
+                }
+
+                if (price < item.WatchItemLogs.Last().Price && item.Contacts.Any())
+                {
+                    using var email = new EmailSender("", "");
+                    foreach (var contact in item.Contacts)
+                    {
+                        Log.Information($"Sending email to {contact.GetFullName()}");
+                        email.SendMail(contact.Email, $@"Price Drop: {item.WatchItemName}", $@"Previous price: ${item.WatchItemLogs.Last().Price}.  Current price: ${price}.");
+                    }
+                }
+
+                item.AddLog(new WatchItemLog { Price = price, LoggedAt = DateTime.Now });
+                Log.Information("Adding log entry");
+                await session.SafeSaveAsync(item);
+                Log.Information("Log entry added");
             }
         }
 
@@ -84,31 +104,9 @@ namespace ItemPriceWatcher
                 {
                     var connectionString = configuration.GetConnectionString("Development");
                     services.AddNHibernate<WatchItem>(connectionString);
-                    services.AddNHibernate<WatchItemLog>(connectionString);
                 })
                 .Build();
             serviceScope = host.Services.CreateScope();
-        }
-
-        private static async Task NewMethod(IMapperSession<WatchItem> session, WatchItem item)
-        {
-            Log.Information($"Received item {item.WatchItemName}.");
-            var checker = new PriceCheckAction(item);
-            var price = checker.GetItemPrice();
-            Log.Information($"Price of {item.WatchItemName}: ${price}");
-
-            if (price < item.WatchItemLogs.Last().Price)
-            {
-                using var email = new EmailSender("", "");
-                foreach (var contact in item.Contacts)
-                {
-                    Log.Information($"Sending email to {contact.GetFullName()}");
-                    email.SendMail(contact.Email, $@"Price Drop: {item.WatchItemName}", $@"Previous price: ${item.WatchItemLogs.Last().Price}.  Current price: ${price}.");
-                }
-            }
-
-            item.AddLog(new WatchItemLog { Price = price, LoggedAt = DateTime.Now });
-            await session.SafeSaveAsync(item);
         }
     }
 }
