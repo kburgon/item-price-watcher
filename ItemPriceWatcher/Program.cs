@@ -83,36 +83,35 @@ namespace ItemPriceWatcher
 
         private static void ConfigureServices(IServiceCollection serviceCollection)
         {
-            serviceCollection.AddSingleton(LoggerFactory.Create(builder => 
+            serviceCollection.AddSingleton(LoggerFactory.Create(builder =>
             {
                 builder.AddSerilog(dispose: true);
             }));
 
             serviceCollection.AddLogging();
-
             configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetParent(AppContext.BaseDirectory).FullName)
                 .AddJsonFile("appsettings.json", false)
                 .Build();
-
-            // Declare email sender singleton;
-            var emailUser = configuration.GetSection("Smtp").GetValue<string>("Username");
-            var emailPass = configuration.GetSection("Smtp").GetValue<string>("Password");
-            var emailSender = new EmailSender(emailUser, emailPass);
 
             // Add access to generic IConfigurationRoot
             serviceCollection.AddSingleton<IConfigurationRoot>(configuration);
 
             // Add service scope
             var host = Host.CreateDefaultBuilder()
-                .ConfigureServices(services => 
-                {
-                    var connectionString = configuration.GetConnectionString("Development");
-                    services.AddNHibernate<WatchItem>(connectionString);
-                    services.AddSingleton<EmailSender>(emailSender);
-                })
+                .ConfigureServices(CreateServiceCollection)
                 .Build();
             serviceScope = host.Services.CreateScope();
+        }
+
+        private static void CreateServiceCollection(IServiceCollection services)
+        {
+            var emailUser = configuration.GetSection("Smtp").GetValue<string>("Username");
+            var emailPass = configuration.GetSection("Smtp").GetValue<string>("Password");
+            var environment = configuration.GetValue<string>("Environment");
+            var connectionString = configuration.GetConnectionString(environment);
+            services.AddNHibernate<WatchItem>(connectionString);
+            services.AddSingleton(new EmailSender(emailUser, emailPass));
         }
     }
 }
