@@ -31,7 +31,7 @@ namespace ItemPriceWatcher
             }
             catch (Exception e)
             {
-                Log.Error("Application error encountered", e);
+                Log.Error($"Application error encountered: {e.Message}", e);
             }
             finally
             {
