@@ -31,7 +31,7 @@ namespace ItemPriceWatcher
             }
             catch (Exception e)
             {
-                Log.Error($"Application error encountered: {e.Message}", e);
+                Log.Error($"Application error encountered: {e}", e);
             }
             finally
             {
@@ -64,7 +64,7 @@ namespace ItemPriceWatcher
                     Log.Information($"Price of {item.WatchItemName}: ${price}");
                 }
 
-                if (price < item.WatchItemLogs.Last().Price && item.Contacts.Any())
+                if (item.WatchItemLogs.Any() && price < item.WatchItemLogs.Last().Price && item.Contacts.Any())
                 {
                     var email = serviceScope.ServiceProvider.GetRequiredService<EmailSender>();
                     foreach (var contact in item.Contacts)

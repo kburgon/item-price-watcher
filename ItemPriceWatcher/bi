@@ -1,0 +1,4 @@
+#env /bin/bash
+
+dotnet publish -c Release
+docker build -t item-price-watcher -f Dockerfile .
