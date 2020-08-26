@@ -14,7 +14,6 @@ namespace ItemPriceWatcher
 {
     class Program
     {
-        public static IConfigurationRoot configuration;
         public static IServiceScope serviceScope;
 
         static async Task Main(string[] args)
@@ -92,13 +91,6 @@ namespace ItemPriceWatcher
             }));
 
             serviceCollection.AddLogging();
-            configuration = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetParent(AppContext.BaseDirectory).FullName)
-                .AddJsonFile("appsettings.json", false)
-                .Build();
-
-            // Add access to generic IConfigurationRoot
-            serviceCollection.AddSingleton<IConfigurationRoot>(configuration);
 
             // Add service scope
             var host = Host.CreateDefaultBuilder()
@@ -109,10 +101,9 @@ namespace ItemPriceWatcher
 
         private static void CreateServiceCollection(IServiceCollection services)
         {
-            var emailUser = configuration.GetSection("Smtp").GetValue<string>("Username");
-            var emailPass = configuration.GetSection("Smtp").GetValue<string>("Password");
-            var environment = configuration.GetValue<string>("Environment");
-            var connectionString = configuration.GetConnectionString(environment);
+            var emailUser = Environment.GetEnvironmentVariable("SMTP_UNAME");
+            var emailPass = Environment.GetEnvironmentVariable("SMTP_PASS");
+            var connectionString = Environment.GetEnvironmentVariable("CONN_STRING");
             services.AddNHibernate<WatchItem>(connectionString);
             services.AddSingleton(new EmailSender(emailUser, emailPass));
         }
