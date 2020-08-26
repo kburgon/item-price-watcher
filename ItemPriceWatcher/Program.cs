@@ -49,6 +49,9 @@ namespace ItemPriceWatcher
             Log.Information("Building service provider");
             IServiceProvider serviceProvider = serviceCollection.BuildServiceProvider();
 
+            Log.Information("Verifying Selenium Hub connectivity");
+            
+
             Log.Information("Getting watch items");
             var session = serviceScope.ServiceProvider.GetRequiredService<IMapperSession<WatchItem>>();
             var watchItems = session.Objects.ToList();

@@ -13,7 +13,10 @@ namespace ItemPriceWatcher
 
         public PriceCheckActionBase(WatchItem watchItem)
         {
-            driver = new RemoteWebDriver(new Uri("http://localhost:4444/wd/hub"), new FirefoxOptions());
+            FirefoxOptions options = new FirefoxOptions();
+            options.AddArgument("--headless");
+            driver = new FirefoxDriver(options);
+            // driver = new RemoteWebDriver(new Uri("http://localhost:4444/wd/hub"), new FirefoxOptions());
             this.watchItem = watchItem;
         }
 

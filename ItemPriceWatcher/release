@@ -1,0 +1,8 @@
+#!env /bin/bash
+
+# Set variables
+USERNAME=buburgo
+IMAGE=item-price-watcher
+
+git pull
+

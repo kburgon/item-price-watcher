@@ -1,0 +1,10 @@
+#env /bin/bash
+
+set -ex
+
+# Set username, image variables
+USERNAME=buburgo
+IMAGE=item-price-watcher
+
+dotnet publish -c Release
+docker build -t $USERNAME/$IMAGE -f Dockerfile .
