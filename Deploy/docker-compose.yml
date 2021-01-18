@@ -1,0 +1,25 @@
+version: '3.9'
+ 
+services:
+  db:
+    image: mysql:5.7
+    container_name: db
+    environment:
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PWORD}"
+      MYSQL_DATABASE: "ItemPriceWatcher"
+      MYSQL_USER: "${MYSQL_USER}"
+      MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
+    ports:
+      - "6033:3306"
+    volumes:
+      - dbdata:/var/lib/mysql
+  pricewatcher:
+    build: ../ItemPriceWatcher
+    links:
+      - db
+    environment:
+      SMTP_UNAME: "${SMTP_UNAME}"
+      SMTP_PASS: "${SMTP_PASS}"
+      CONN_STRING: "${CONN_STRING}"
+volumes:
+  dbdata:
