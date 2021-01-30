@@ -16,7 +16,7 @@ services:
       - ./conf/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
   pricewatcher:
     build: ../ItemPriceWatcher
-    links:
+    depends_on:
       - db
     environment:
       SMTP_UNAME: "${SMTP_UNAME}"
