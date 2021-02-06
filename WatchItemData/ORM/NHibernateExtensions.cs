@@ -1,3 +1,4 @@
+using System;
 using FluentNHibernate.Cfg;
 using FluentNHibernate.Cfg.Db;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,13 +19,34 @@ namespace WatchItemData.ORM
                                         .Database(MySQLConfiguration.Standard.ConnectionString(c => c.Is(connectionString)))
                                         .Mappings(m => m.FluentMappings.AddFromAssemblyOf<WatchItem>());
 
-            var sessionFactory = configuration.BuildSessionFactory();
-
-            services.AddSingleton(sessionFactory);
-            services.AddScoped(factory => sessionFactory.OpenSession());
-            services.AddScoped<IMapperSession<T>, MapperSession<T>>();
+            ConnectSession<T>(configuration, services);
 
             return services;
+        }
+
+        private static void ConnectSession<T>(FluentConfiguration configuration, IServiceCollection services)
+        {
+            var connected = false;
+            for (int waitIteration = 0; waitIteration < 3 && !connected; waitIteration++)
+            {
+                try
+                {
+                    var sessionFactory = configuration.BuildSessionFactory();
+                    services.AddSingleton(sessionFactory);
+                    services.AddScoped(factory => sessionFactory.OpenSession());
+                    services.AddScoped<IMapperSession<T>, MapperSession<T>>();
+                    connected = true;
+                }
+                catch (FluentNHibernate.Cfg.FluentConfigurationException)
+                {
+                    if (waitIteration == 2)
+                    {
+                        throw;
+                    }
+
+                    System.Threading.Thread.Sleep(TimeSpan.FromSeconds(10));
+                }
+            }
         }
     }
 }

@@ -2,7 +2,7 @@ version: '3.9'
  
 services:
   db:
-    image: mysql:5.7
+    image: mariadb
     container_name: db
     environment:
       MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PWORD}"
@@ -17,7 +17,8 @@ services:
   pricewatcher:
     build: ../ItemPriceWatcher
     depends_on:
-      - db
+      db:
+        condition: service_started
     environment:
       SMTP_UNAME: "${SMTP_UNAME}"
       SMTP_PASS: "${SMTP_PASS}"
