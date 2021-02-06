@@ -1,3 +1,0 @@
-#env /bin/bash
-
-docker run --rm item-price-watcher
