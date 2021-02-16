@@ -1,8 +1,33 @@
+@model ItemPriceWatcher.Manager.Models.WatchItem.WatchItemCollectionViewModel
 @{
     ViewData["Title"] = "Watch Items";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Item Price Watcher - Manager</h1>
-    <p>This is a paragraph dedicated to Watch Items.</p>
+    <h1 class="display-4">Watch Items</h1>
+</div>
+<div class="container">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Item Name</th>
+                <th>URL</th>
+                <th>Path</th>
+                <th>Contact Name</th>
+                <th>Contact Email</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var watchItem in Model.WatchItems)
+            {
+                <tr>@watchItem.WatchItemName</tr>
+                <tr>@watchItem.URL</tr>
+                <tr>@watchItem.ItemPath</tr>
+                <tr>@watchItem.ContactFirstName @watchItem.ContactLastName</tr>
+                <tr>@watchItem.ContactEmail</tr>
+                <tr><button class="btn">Delete</button></tr>
+            }
+        </tbody>
+    </table>
 </div>
