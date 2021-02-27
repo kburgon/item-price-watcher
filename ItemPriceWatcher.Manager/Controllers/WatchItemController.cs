@@ -20,7 +20,7 @@ namespace ItemPriceWatcher.Manager.Controllers
 
         public IActionResult Index()
         {
-            return View(model: new WatchItemCollectionViewModel());
+            return View(model: _watchItemManager.GetWatchItems());
         }
 
         public IActionResult Error()

@@ -1,9 +1,13 @@
+using System;
 using ItemPriceWatcher.Manager.BLL;
+using ItemPriceWatcher.Manager.DAL;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using WatchItemData;
+using WatchItemData.ORM;
 
 namespace ItemPriceWatcher.Manager
 {
@@ -19,9 +23,12 @@ namespace ItemPriceWatcher.Manager
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var connectionString = Environment.GetEnvironmentVariable("CONN_STRING");
             services.AddRazorPages().AddRazorRuntimeCompilation();
             services.AddControllersWithViews();
             services.AddTransient<IWatchItemManager, WatchItemManager>();
+            services.AddSingleton<IWatchItemRepository, SqlWatchItemRepository>();
+            services.AddNHibernate<WatchItem>(connectionString);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
