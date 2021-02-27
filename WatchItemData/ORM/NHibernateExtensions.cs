@@ -11,6 +11,11 @@ namespace WatchItemData.ORM
     {
         public static IServiceCollection AddNHibernate<T>(this IServiceCollection services, string connectionString)
         {
+            if (string.IsNullOrEmpty(connectionString))
+            {
+                throw new ArgumentNullException("Cannot initialize with an empty connection string.");
+            }
+
             var mapper = new ModelMapper();
             mapper.AddMappings(typeof(NHibernateExtensions).Assembly.ExportedTypes);
             HbmMapping domainMapping = mapper.CompileMappingForAllExplicitlyAddedEntities();
