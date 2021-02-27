@@ -1,5 +1,8 @@
+using System.Collections.Generic;
+using System.Linq;
 using ItemPriceWatcher.Manager.DAL;
 using ItemPriceWatcher.Manager.Models.WatchItem;
+using WatchItemData;
 
 namespace ItemPriceWatcher.Manager.BLL
 {
@@ -18,16 +21,31 @@ namespace ItemPriceWatcher.Manager.BLL
             var watchItems = _watchItemRepository.GetAllWatchItems();
             foreach (var watchItem in watchItems)
             {
-                collection.WatchItems.Add(new WatchItemViewModel
-                    {
-                        WatchItemId = watchItem.WatchItemID,
-                        WatchItemName = watchItem.WatchItemName,
-                        URL = watchItem.WebsiteUrl,
-                        ItemPath = watchItem.ItemPath
-                    });
+                WatchItemViewModel model = CreateModel(watchItem);
+                collection.WatchItems.Add(model);
             }
 
             return collection;
+        }
+
+        private static WatchItemViewModel CreateModel(WatchItem watchItem)
+        {
+            var model = new WatchItemViewModel();
+            var contact = watchItem.Contacts.First();
+            
+            if (contact != null)
+            {
+                model.ContactId = contact.ContactID;
+                model.ContactFirstName = contact.FirstName;
+                model.ContactLastName = contact.Surname;
+                model.ContactEmail = contact.Email;
+            }
+
+            model.WatchItemId = watchItem.WatchItemID;
+            model.WatchItemName = watchItem.WatchItemName;
+            model.URL = watchItem.WebsiteUrl;
+            model.ItemPath = watchItem.ItemPath;
+            return model;
         }
     }
 }
