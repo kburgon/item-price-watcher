@@ -21,12 +21,14 @@
         <tbody>
             @foreach (var watchItem in Model.WatchItems)
             {
-                <tr>@watchItem.WatchItemName</tr>
-                <tr>@watchItem.URL</tr>
-                <tr>@watchItem.ItemPath</tr>
-                <tr>@watchItem.ContactFirstName @watchItem.ContactLastName</tr>
-                <tr>@watchItem.ContactEmail</tr>
-                <tr><button class="btn">Delete</button></tr>
+                <tr>
+                    <td>@watchItem.WatchItemName</td>
+                    <td>@watchItem.URL</td>
+                    <td>@watchItem.ItemPath</td>
+                    <td>@watchItem.ContactFirstName @watchItem.ContactLastName</td>
+                    <td>@watchItem.ContactEmail</td>
+                    <td><button class="btn">Delete</button></td>
+                </tr>
             }
         </tbody>
     </table>
