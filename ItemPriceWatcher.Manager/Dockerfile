@@ -7,10 +7,10 @@ COPY ["ItemPriceWatcher.Manager/ItemPriceWatcher.Manager.csproj", "ItemPriceWatc
 RUN dotnet restore "ItemPriceWatcher.Manager/ItemPriceWatcher.Manager.csproj"
 COPY . .
 WORKDIR "/src/ItemPriceWatcher.Manager"
-RUN dotnet build "ItemPriceWatcher.Manager.csproj" -c Release -o /app/build
+RUN dotnet build "ItemPriceWatcher.Manager.csproj" -c Debug -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "ItemPriceWatcher.Manager.csproj" -c Release -o /app/publish
+RUN dotnet publish "ItemPriceWatcher.Manager.csproj" -c Debug -o /app/publish
 
 FROM base AS final
 WORKDIR /app
