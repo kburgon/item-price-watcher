@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using ItemPriceWatcher.Manager.DAL;
 using ItemPriceWatcher.Manager.Models.WatchItem;
@@ -45,6 +46,14 @@ namespace ItemPriceWatcher.Manager.BLL
             model.URL = watchItem.WebsiteUrl;
             model.ItemPath = watchItem.ItemPath;
             return model;
+        }
+
+        public void AddWatchItem(WatchItem watchItem, Contact contact)
+        {
+            _watchItemRepository.AddWatchItem(watchItem);
+            contact.WatchItem = _watchItemRepository.GetWatchItemByName(watchItem.WatchItemName);
+            watchItem.Contacts.Add(contact);
+            _watchItemRepository.AddWatchItem(watchItem);
         }
     }
 }

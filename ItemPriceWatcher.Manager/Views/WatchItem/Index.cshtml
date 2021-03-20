@@ -11,15 +11,44 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">$times;</button>
                 <h4 class="modal-title">Add Watch Item</h4>
             </div>
-            <div class="modal-body">
-                <p>Some text in the modal.</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            </div>
+            <form id="addWatchItemFrm" action="WatchItem/AddWatchItem" method="post">
+                <div class="modal-body">
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <td><label for="itemNameInput">Watch Item Name</label></td>
+                                <td><input type="text" name="itemNameInput" id="itemName"></td>
+                            </tr>
+                            <tr>
+                                <td><label for="urlInput">URL</label></td>
+                                <td><input type="text" name="urlInput" id="urlInput"><br/></td>
+                            </tr>
+                            <tr>
+                                <td><label for="itemPathInput">Item Path</label></td>
+                                <td><input type="text" name="itemPathInput" id="itemPathInput"></td>
+                            </tr>
+                            <tr>
+                                <td><label for="contactFirstNameInput">Contact First Name</label></td>
+                                <td><input type="text" name="contactFirstNameInput" id="contactFirstNameInput"></td>
+                            </tr>
+                            <tr>
+                                <td><label for="contactLastNameInput">Contact Last Name</label></td>
+                                <td><input type="text" name="contactLastNameInput" id="contactLastNameInput"></td>
+                            </tr>
+                            <tr>
+                                <td><label for="contactEmailInput">Email</label></td>
+                                <td><input type="email" name="contactEmailInput" id="contactEmailInput"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-default" name="submitWatchItem" id="submitWatchItem">Submit</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

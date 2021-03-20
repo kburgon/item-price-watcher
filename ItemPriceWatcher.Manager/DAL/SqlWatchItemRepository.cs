@@ -14,7 +14,13 @@ namespace ItemPriceWatcher.Manager.DAL
             _watchItemSession = session;
         }
 
+        public void AddWatchItem(WatchItem watchItem) 
+            => _watchItemSession.SafeSaveAsync(watchItem).Wait();
+
         public List<WatchItem> GetAllWatchItems() 
             => _watchItemSession.Objects.ToList();
+
+        public WatchItem GetWatchItemByName(string name) 
+            => _watchItemSession.Objects.FirstOrDefault(watchItem => watchItem.WatchItemName == name);
     }
 }
