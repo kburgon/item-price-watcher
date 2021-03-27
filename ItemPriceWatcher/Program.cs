@@ -22,18 +22,19 @@ namespace ItemPriceWatcher
 
             Log.Debug("Logger initialized");
 
-            try
+            while (true)
             {
-                await RunApplicationAsync();
-            }
-            catch (Exception e)
-            {
-                Log.Error($"Application error encountered: {e}", e);
-            }
-            finally
-            {
-                serviceScope.Dispose();
-                Log.CloseAndFlush();
+                try
+                {
+                    if (DateTime.Now.Hour == 8)
+                    {
+                        await RunApplicationAsync();
+                    }
+                }
+                catch (Exception e)
+                {
+                    Log.Error($"Application error encountered: {e}", e);
+                }
             }
         }
 
