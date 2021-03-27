@@ -31,7 +31,7 @@ namespace ItemPriceWatcher.Manager.BLL
         private static WatchItemViewModel CreateModel(WatchItem watchItem)
         {
             var model = new WatchItemViewModel();
-            var contact = watchItem.Contacts.First();
+            var contact = watchItem.Contacts.FirstOrDefault();
             
             if (contact != null)
             {

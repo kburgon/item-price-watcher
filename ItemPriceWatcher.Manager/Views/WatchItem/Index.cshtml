@@ -65,16 +65,19 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var watchItem in Model.WatchItems)
+            @if (Model.WatchItems.Any())
             {
-                <tr>
-                    <td>@watchItem.WatchItemName</td>
-                    <td>@watchItem.URL</td>
-                    <td>@watchItem.ItemPath</td>
-                    <td>@watchItem.ContactFirstName @watchItem.ContactLastName</td>
-                    <td>@watchItem.ContactEmail</td>
-                    <td><button class="btn">Delete</button></td>
-                </tr>
+                @foreach (var watchItem in Model.WatchItems)
+                {
+                    <tr>
+                        <td>@watchItem.WatchItemName</td>
+                        <td>@watchItem.URL</td>
+                        <td>@watchItem.ItemPath</td>
+                        <td>@watchItem.ContactFirstName @watchItem.ContactLastName</td>
+                        <td>@watchItem.ContactEmail</td>
+                        <td><button class="btn">Delete</button></td>
+                    </tr>
+                }
             }
         </tbody>
     </table>
