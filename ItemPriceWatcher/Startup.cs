@@ -30,8 +30,7 @@ namespace ItemPriceWatcher
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddSingleton<WeatherForecastService>();
-            services.AddHostedService<PriceWatcherWorker>();
+            services.AddHostedService<PriceWatcherService>();
 
         }
 
