@@ -33,6 +33,14 @@ namespace ItemPriceWatcher.BusinessLogic
             _logger.LogInformation("Getting watch items");
             IEnumerable<WatchItem> watchItems = _watchItemAccess.GetAllWatchItems();
             _logger.LogInformation($"Received {watchItems.Count()} watch item(s)");
+
+            foreach (var watchItem in watchItems)
+            {
+                _logger.LogInformation($"Received item {watchItem.WatchItemName}");
+                _logger.LogInformation("Getting most recent watch item log");
+                WatchItemLog log = _watchItemLogAccess.GetMostRecentLogForWatchItemID(watchItem.WatchItemID);
+                _logger.LogInformation($"Most recent log: Log ID {log.WatchItemLogID}, price {log.Price}");
+            }
         }
 
         public bool ShouldRun()

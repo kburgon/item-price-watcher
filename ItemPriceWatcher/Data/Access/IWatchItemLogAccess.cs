@@ -5,7 +5,7 @@ namespace ItemPriceWatcher.Data.Access
 {
     public interface IWatchItemLogAccess
     {
-        IEnumerable<WatchItemLog> GetWatchItemLogsForWatchItemId(int id);
+        WatchItemLog GetMostRecentLogForWatchItemID(int id);
         int InsertWatchItemLog(WatchItemLog log);
     }
 }
