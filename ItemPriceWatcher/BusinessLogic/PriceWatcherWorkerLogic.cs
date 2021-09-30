@@ -14,6 +14,7 @@ namespace ItemPriceWatcher.BusinessLogic
         private readonly IWatchItemAccess _watchItemAccess;
         private readonly IWatchItemLogAccess _watchItemLogAccess;
         private readonly IContactAccess _contactAccess;
+        private readonly IPriceAccess _priceAccess;
         private readonly IMapperSession<WatchItem> _watchItemMapperSession;
         private readonly IMapperSession<WatchItemLog> _watchItemLogMapperSession;
         private readonly IMapperSession<Contact> _contactMapperSession;
@@ -21,12 +22,14 @@ namespace ItemPriceWatcher.BusinessLogic
         public PriceWatcherWorkerLogic(ILogger<PriceWatcherWorkerLogic> logger,
                                        IWatchItemAccess watchItemAccess,
                                        IWatchItemLogAccess watchItemLogAccess,
-                                       IContactAccess contactAccess)
+                                       IContactAccess contactAccess,
+                                       IPriceAccess priceAccess)
         {
             _logger = logger;
             _watchItemAccess = watchItemAccess;
             _watchItemLogAccess = watchItemLogAccess;
             _contactAccess = contactAccess;
+            _priceAccess = priceAccess;
         }
         public async Task RunAsync()
         {
@@ -34,12 +37,12 @@ namespace ItemPriceWatcher.BusinessLogic
             IEnumerable<WatchItem> watchItems = _watchItemAccess.GetAllWatchItems();
             _logger.LogInformation($"Received {watchItems.Count()} watch item(s)");
 
+            decimal price;
             foreach (var watchItem in watchItems)
             {
                 _logger.LogInformation($"Received item {watchItem.WatchItemName}");
-                _logger.LogInformation("Getting most recent watch item log");
+                price = await _priceAccess.GetPriceAsync(watchItem);
                 WatchItemLog log = _watchItemLogAccess.GetMostRecentLogForWatchItemID(watchItem.WatchItemID);
-                _logger.LogInformation($"Most recent log: Log ID {log.WatchItemLogID}, price {log.Price}");
             }
         }
 

@@ -17,6 +17,7 @@ namespace ItemPriceWatcher.Tests
         private IWatchItemAccess _watchItemAccessMock;
         private IWatchItemLogAccess _watchItemLogAccessMock;
         private IContactAccess _contactAccessMock;
+        private IPriceAccess _priceAccess;
 
         [SetUp]
         public void Setup()
@@ -25,10 +26,12 @@ namespace ItemPriceWatcher.Tests
             _watchItemAccessMock = Mock.Of<IWatchItemAccess>();
             _watchItemLogAccessMock = Mock.Of<IWatchItemLogAccess>();
             _contactAccessMock = Mock.Of<IContactAccess>();
+            _priceAccess = Mock.Of<IPriceAccess>();
             _logic = new PriceWatcherWorkerLogic(_loggerMock,
                                                  _watchItemAccessMock,
                                                  _watchItemLogAccessMock,
-                                                 _contactAccessMock);
+                                                 _contactAccessMock,
+                                                 _priceAccess);
         }
 
         [Test]
@@ -51,10 +54,21 @@ namespace ItemPriceWatcher.Tests
             Mock.Get(_watchItemLogAccessMock).Verify(m => m.GetMostRecentLogForWatchItemID(It.IsAny<int>()), Times.Once);
         }
 
+        [Test]
+        public async Task RunAsync_GetsPriceFromPriceScraper()
+        {
+            SetupMockReturnsForBasicModelAccess();
+
+            await _logic.RunAsync();
+
+            Mock.Get(_priceAccess).Verify(m => m.GetPriceAsync(It.IsAny<WatchItem>()), Times.Once);
+        }
+
         private void SetupMockReturnsForBasicModelAccess()
         {
             Mock.Get(_watchItemAccessMock).Setup(m => m.GetAllWatchItems()).Returns(GetMockWatchItems());
             Mock.Get(_watchItemLogAccessMock).Setup(m => m.GetMostRecentLogForWatchItemID(It.IsAny<int>())).Returns(GetMockWatchItemLog());
+            Mock.Get(_priceAccess).Setup(m => m.GetPriceAsync(It.IsAny<WatchItem>())).ReturnsAsync(5.00M);
         }
 
         private IEnumerable<WatchItem> GetMockWatchItems()
