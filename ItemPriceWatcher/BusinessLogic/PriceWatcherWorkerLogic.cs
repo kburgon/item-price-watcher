@@ -11,23 +11,28 @@ namespace ItemPriceWatcher.BusinessLogic
     public class PriceWatcherWorkerLogic : IPriceWatcherWorkerLogic
     {
         private readonly ILogger<PriceWatcherWorkerLogic> _logger;
+        private readonly IWatchItemAccess _watchItemAccess;
+        private readonly IWatchItemLogAccess _watchItemLogAccess;
+        private readonly IContactAccess _contactAccess;
         private readonly IMapperSession<WatchItem> _watchItemMapperSession;
         private readonly IMapperSession<WatchItemLog> _watchItemLogMapperSession;
         private readonly IMapperSession<Contact> _contactMapperSession;
 
         public PriceWatcherWorkerLogic(ILogger<PriceWatcherWorkerLogic> logger,
-                                       IMapperSession<WatchItem> watchItemMapperSession,
-                                       IMapperSession<WatchItemLog> watchItemLogMapperSession,
-                                       IMapperSession<Contact> contactMapperSession)
+                                       IWatchItemAccess watchItemAccess,
+                                       IWatchItemLogAccess watchItemLogAccess,
+                                       IContactAccess contactAccess)
         {
             _logger = logger;
-            _watchItemMapperSession = watchItemMapperSession;
-            _watchItemLogMapperSession = watchItemLogMapperSession;
-            _contactMapperSession = contactMapperSession;
+            _watchItemAccess = watchItemAccess;
+            _watchItemLogAccess = watchItemLogAccess;
+            _contactAccess = contactAccess;
         }
-        public Task RunAsync()
+        public async Task RunAsync()
         {
-            throw new System.NotImplementedException();
+            _logger.LogInformation("Getting watch items");
+            IEnumerable<WatchItem> watchItems = _watchItemAccess.GetAllWatchItems();
+            _logger.LogInformation($"Received {watchItems.Count()} watch item(s)");
         }
 
         public bool ShouldRun()
