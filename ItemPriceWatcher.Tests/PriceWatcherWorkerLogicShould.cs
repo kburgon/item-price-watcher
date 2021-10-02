@@ -35,7 +35,7 @@ namespace ItemPriceWatcher.Tests
         }
 
         [Test]
-        public async Task RunAsync_GetsWatchItems()
+        public async Task RunAsync_GetWatchItems()
         {
             SetupMockReturnsForBasicModelAccess();
 
@@ -45,7 +45,7 @@ namespace ItemPriceWatcher.Tests
         }
 
         [Test]
-        public async Task RunAsync_GetsMostRecentWatchItemLog()
+        public async Task RunAsync_GetMostRecentWatchItemLog()
         {
             SetupMockReturnsForBasicModelAccess();
 
@@ -55,7 +55,7 @@ namespace ItemPriceWatcher.Tests
         }
 
         [Test]
-        public async Task RunAsync_GetsPriceFromPriceScraper()
+        public async Task RunAsync_GetPriceFromPriceScraper()
         {
             SetupMockReturnsForBasicModelAccess();
 
@@ -64,11 +64,22 @@ namespace ItemPriceWatcher.Tests
             Mock.Get(_priceAccess).Verify(m => m.GetPriceAsync(It.IsAny<WatchItem>()), Times.Once);
         }
 
-        private void SetupMockReturnsForBasicModelAccess()
+        [Test]
+        public async Task RunAsync_GetContactForPriceDrop()
+        {
+            const decimal TEST_PRICE = 2.00M;
+            SetupMockReturnsForBasicModelAccess(TEST_PRICE);
+
+            await _logic.RunAsync();
+
+            Mock.Get(_contactAccessMock).Verify(m => m.GetContactsForWatchItemId(It.IsAny<int>()), Times.Once);
+        }
+
+        private void SetupMockReturnsForBasicModelAccess(decimal fakePrice = 5.00M)
         {
             Mock.Get(_watchItemAccessMock).Setup(m => m.GetAllWatchItems()).Returns(GetMockWatchItems());
             Mock.Get(_watchItemLogAccessMock).Setup(m => m.GetMostRecentLogForWatchItemID(It.IsAny<int>())).Returns(GetMockWatchItemLog());
-            Mock.Get(_priceAccess).Setup(m => m.GetPriceAsync(It.IsAny<WatchItem>())).ReturnsAsync(5.00M);
+            Mock.Get(_priceAccess).Setup(m => m.GetPriceAsync(It.IsAny<WatchItem>())).ReturnsAsync(fakePrice);
         }
 
         private IEnumerable<WatchItem> GetMockWatchItems()

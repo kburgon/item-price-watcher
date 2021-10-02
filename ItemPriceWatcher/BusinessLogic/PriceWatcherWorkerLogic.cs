@@ -43,6 +43,10 @@ namespace ItemPriceWatcher.BusinessLogic
                 _logger.LogInformation($"Received item {watchItem.WatchItemName}");
                 price = await _priceAccess.GetPriceAsync(watchItem);
                 WatchItemLog log = _watchItemLogAccess.GetMostRecentLogForWatchItemID(watchItem.WatchItemID);
+                if (price < log.Price)
+                {
+                    IEnumerable<Contact> contacts = _contactAccess.GetContactsForWatchItemId(watchItem.WatchItemID);
+                }
             }
         }
 
