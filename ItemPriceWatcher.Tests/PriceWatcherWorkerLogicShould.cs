@@ -99,6 +99,20 @@ namespace ItemPriceWatcher.Tests
             Mock.Get(_notificationSenderMock).Verify(m => m.SendNotificationAsync(It.IsAny<WatchItem>(), It.IsAny<IEnumerable<Contact>>()), Times.Once);
         }
 
+        [Test]
+        [TestCase(5.00)]
+        [TestCase(7.00)]
+        [TestCase(2.00)]
+        [TestCase(3.00)]
+        public async Task RunAsync_RecordNewWatchItemLogAlways(decimal testPrice)
+        {
+            SetupMockReturnsForBasicModelAccess(testPrice);
+
+            await _logic.RunAsync();
+
+            Mock.Get(_watchItemLogAccessMock).Verify(m => m.InsertWatchItemLog(It.IsAny<WatchItemLog>()), Times.Once);
+        }
+
         private void SetupMockReturnsForBasicModelAccess(decimal fakePrice = 5.00M)
         {
             Mock.Get(_watchItemAccessMock).Setup(m => m.GetAllWatchItems()).Returns(GetMockWatchItems());

@@ -51,6 +51,13 @@ namespace ItemPriceWatcher.BusinessLogic
                     IEnumerable<Contact> contacts = _contactAccess.GetContactsForWatchItemId(watchItem.WatchItemID);
                     await _notificationSender.SendNotificationAsync(watchItem, contacts);
                 }
+
+                _ = _watchItemLogAccess.InsertWatchItemLog(new WatchItemLog
+                {
+                    LoggedAt = DateTime.Now,
+                    Price = price,
+                    WatchItemID = watchItem.WatchItemID
+                });
             }
         }
 
