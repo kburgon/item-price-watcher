@@ -18,6 +18,7 @@ namespace ItemPriceWatcher.Tests
         private IWatchItemLogAccess _watchItemLogAccessMock;
         private IContactAccess _contactAccessMock;
         private IPriceAccess _priceAccess;
+        private INotificationSender _notificationSenderMock;
 
         [SetUp]
         public void Setup()
@@ -27,11 +28,13 @@ namespace ItemPriceWatcher.Tests
             _watchItemLogAccessMock = Mock.Of<IWatchItemLogAccess>();
             _contactAccessMock = Mock.Of<IContactAccess>();
             _priceAccess = Mock.Of<IPriceAccess>();
+            _notificationSenderMock = Mock.Of<INotificationSender>();
             _logic = new PriceWatcherWorkerLogic(_loggerMock,
                                                  _watchItemAccessMock,
                                                  _watchItemLogAccessMock,
                                                  _contactAccessMock,
-                                                 _priceAccess);
+                                                 _priceAccess,
+                                                 _notificationSenderMock);
         }
 
         [Test]
@@ -73,6 +76,27 @@ namespace ItemPriceWatcher.Tests
             await _logic.RunAsync();
 
             Mock.Get(_contactAccessMock).Verify(m => m.GetContactsForWatchItemId(It.IsAny<int>()), Times.Once);
+        }
+
+        [Test]
+        public async Task RunAsync_DoesNotGetContactForNoPriceDrop()
+        {
+            SetupMockReturnsForBasicModelAccess();
+
+            await _logic.RunAsync();
+
+            Mock.Get(_contactAccessMock).Verify(m => m.GetContactsForWatchItemId(It.IsAny<int>()), Times.Never);
+        }
+
+        [Test]
+        public async Task RunAsync_SendsEmailOnPriceDrop()
+        {
+            const decimal TEST_PRICE = 2.00M;
+            SetupMockReturnsForBasicModelAccess(TEST_PRICE);
+
+            await _logic.RunAsync();
+
+            Mock.Get(_notificationSenderMock).Verify(m => m.SendNotificationAsync(It.IsAny<WatchItem>(), It.IsAny<IEnumerable<Contact>>()), Times.Once);
         }
 
         private void SetupMockReturnsForBasicModelAccess(decimal fakePrice = 5.00M)

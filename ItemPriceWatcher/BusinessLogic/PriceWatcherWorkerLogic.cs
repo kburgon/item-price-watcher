@@ -15,6 +15,7 @@ namespace ItemPriceWatcher.BusinessLogic
         private readonly IWatchItemLogAccess _watchItemLogAccess;
         private readonly IContactAccess _contactAccess;
         private readonly IPriceAccess _priceAccess;
+        private readonly INotificationSender _notificationSender;
         private readonly IMapperSession<WatchItem> _watchItemMapperSession;
         private readonly IMapperSession<WatchItemLog> _watchItemLogMapperSession;
         private readonly IMapperSession<Contact> _contactMapperSession;
@@ -23,13 +24,15 @@ namespace ItemPriceWatcher.BusinessLogic
                                        IWatchItemAccess watchItemAccess,
                                        IWatchItemLogAccess watchItemLogAccess,
                                        IContactAccess contactAccess,
-                                       IPriceAccess priceAccess)
+                                       IPriceAccess priceAccess,
+                                       INotificationSender notificationSender)
         {
             _logger = logger;
             _watchItemAccess = watchItemAccess;
             _watchItemLogAccess = watchItemLogAccess;
             _contactAccess = contactAccess;
             _priceAccess = priceAccess;
+            _notificationSender = notificationSender;
         }
         public async Task RunAsync()
         {
@@ -46,6 +49,7 @@ namespace ItemPriceWatcher.BusinessLogic
                 if (price < log.Price)
                 {
                     IEnumerable<Contact> contacts = _contactAccess.GetContactsForWatchItemId(watchItem.WatchItemID);
+                    await _notificationSender.SendNotificationAsync(watchItem, contacts);
                 }
             }
         }
