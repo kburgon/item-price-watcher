@@ -35,7 +35,37 @@ namespace ItemPriceWatcher.Tests
                                                  _contactAccessMock,
                                                  _priceAccess,
                                                  _notificationSenderMock);
+
+
+            Mock.Get(_watchItemAccessMock).Setup(m => m.GetAllWatchItems()).Returns(GetMockWatchItems());
+            Mock.Get(_watchItemLogAccessMock).Setup(m => m.GetMostRecentLogForWatchItemID(It.IsAny<int>())).Returns(GetMockWatchItemLog());
         }
+
+        #region Test Object Setup
+        private IEnumerable<WatchItem> GetMockWatchItems()
+        {
+            return new List<WatchItem>
+            {
+                new()
+                {
+                    WatchItemID = 5,
+                    WatchItemName = "Test",
+                    WebsiteUrl = "https://www.google.com",
+                    ItemPath = "//html"
+                }
+            };
+        }
+
+        private WatchItemLog GetMockWatchItemLog()
+        {
+            return new()
+            {
+                WatchItemLogID = 7,
+                Price = 5.00M,
+                LoggedAt = new DateTime(2020, 5, 7)
+            };
+        }
+        #endregion
 
         [Test]
         public async Task RunAsync_GetWatchItems()
@@ -115,33 +145,8 @@ namespace ItemPriceWatcher.Tests
 
         private void SetupMockReturnsForBasicModelAccess(decimal fakePrice = 5.00M)
         {
-            Mock.Get(_watchItemAccessMock).Setup(m => m.GetAllWatchItems()).Returns(GetMockWatchItems());
-            Mock.Get(_watchItemLogAccessMock).Setup(m => m.GetMostRecentLogForWatchItemID(It.IsAny<int>())).Returns(GetMockWatchItemLog());
             Mock.Get(_priceAccess).Setup(m => m.GetPriceAsync(It.IsAny<WatchItem>())).ReturnsAsync(fakePrice);
         }
 
-        private IEnumerable<WatchItem> GetMockWatchItems()
-        {
-            return new List<WatchItem>
-            {
-                new()
-                {
-                    WatchItemID = 5,
-                    WatchItemName = "Test",
-                    WebsiteUrl = "https://www.google.com",
-                    ItemPath = "//html"
-                }
-            };
-        }
-
-        private WatchItemLog GetMockWatchItemLog()
-        {
-            return new()
-            {
-                WatchItemLogID = 7,
-                Price = 5.00M,
-                LoggedAt = new DateTime(2020, 5, 7)
-            };
-        }
     }
 }
