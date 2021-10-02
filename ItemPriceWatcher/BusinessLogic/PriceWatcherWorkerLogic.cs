@@ -40,25 +40,30 @@ namespace ItemPriceWatcher.BusinessLogic
             IEnumerable<WatchItem> watchItems = _watchItemAccess.GetAllWatchItems();
             _logger.LogInformation($"Received {watchItems.Count()} watch item(s)");
 
-            decimal price;
             foreach (var watchItem in watchItems)
             {
-                _logger.LogInformation($"Received item {watchItem.WatchItemName}");
-                price = await _priceAccess.GetPriceAsync(watchItem);
-                WatchItemLog log = _watchItemLogAccess.GetMostRecentLogForWatchItemID(watchItem.WatchItemID);
-                if (price < log.Price)
-                {
-                    IEnumerable<Contact> contacts = _contactAccess.GetContactsForWatchItemId(watchItem.WatchItemID);
-                    await _notificationSender.SendNotificationAsync(watchItem, contacts);
-                }
-
-                _ = _watchItemLogAccess.InsertWatchItemLog(new WatchItemLog
-                {
-                    LoggedAt = DateTime.Now,
-                    Price = price,
-                    WatchItemID = watchItem.WatchItemID
-                });
+                await CheckPrice(watchItem);
             }
+        }
+
+        private async Task CheckPrice(WatchItem watchItem)
+        {
+            decimal price;
+            _logger.LogInformation($"Received item {watchItem.WatchItemName}");
+            price = await _priceAccess.GetPriceAsync(watchItem);
+            WatchItemLog log = _watchItemLogAccess.GetMostRecentLogForWatchItemID(watchItem.WatchItemID);
+            if (price < log.Price)
+            {
+                IEnumerable<Contact> contacts = _contactAccess.GetContactsForWatchItemId(watchItem.WatchItemID);
+                await _notificationSender.SendNotificationAsync(watchItem, contacts);
+            }
+
+            _ = _watchItemLogAccess.InsertWatchItemLog(new WatchItemLog
+            {
+                LoggedAt = DateTime.Now,
+                Price = price,
+                WatchItemID = watchItem.WatchItemID
+            });
         }
 
         public bool ShouldRun()
