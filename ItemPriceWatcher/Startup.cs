@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using ItemPriceWatcher.Data;
 using ItemPriceWatcher.Services;
 using ItemPriceWatcher.Data.Access;
 using ItemPriceWatcher.Data.Models;

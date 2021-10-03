@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using System.Threading.Tasks;
 using ItemPriceWatcher.Data.Models;
 
 namespace ItemPriceWatcher.Data.Access
@@ -6,6 +6,6 @@ namespace ItemPriceWatcher.Data.Access
     public interface IWatchItemLogAccess
     {
         WatchItemLog GetMostRecentLogForWatchItemID(int id);
-        int InsertWatchItemLog(WatchItemLog log);
+        Task<int> InsertWatchItemLogAsync(WatchItemLog log);
     }
 }

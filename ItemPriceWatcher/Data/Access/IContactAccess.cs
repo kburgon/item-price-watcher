@@ -1,11 +1,12 @@
 using ItemPriceWatcher.Data.Models;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace ItemPriceWatcher.Data.Access
 {
     public interface IContactAccess
     {
         IEnumerable<Contact> GetContactsForWatchItemId(int id);
-        int InsertContact(Contact contact);
+        Task<int> InsertContactAsync(Contact contact);
     }
 }

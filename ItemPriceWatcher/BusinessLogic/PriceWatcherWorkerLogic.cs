@@ -58,7 +58,7 @@ namespace ItemPriceWatcher.BusinessLogic
                 await _notificationSender.SendNotificationAsync(watchItem, contacts);
             }
 
-            _ = _watchItemLogAccess.InsertWatchItemLog(new WatchItemLog
+            _ = await _watchItemLogAccess.InsertWatchItemLogAsync(new WatchItemLog
             {
                 LoggedAt = DateTime.Now,
                 Price = price,

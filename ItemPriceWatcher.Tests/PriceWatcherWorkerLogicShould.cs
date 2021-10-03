@@ -140,7 +140,7 @@ namespace ItemPriceWatcher.Tests
 
             await _logic.RunAsync();
 
-            Mock.Get(_watchItemLogAccessMock).Verify(m => m.InsertWatchItemLog(It.IsAny<WatchItemLog>()), Times.Once);
+            Mock.Get(_watchItemLogAccessMock).Verify(m => m.InsertWatchItemLogAsync(It.IsAny<WatchItemLog>()), Times.Once);
         }
 
         private void SetupMockReturnsForBasicModelAccess(decimal fakePrice = 5.00M)
